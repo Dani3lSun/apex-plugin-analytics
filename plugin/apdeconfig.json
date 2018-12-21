@@ -1,0 +1,21 @@
+{
+  "plugin": {
+    "name": "DE.DANIELH.APEXANALYTICS",
+    "type": "dynamic_action",
+    "appId": 280
+  },
+  "database": {
+    "host": "localhost",
+    "port": 1521,
+    "sid": "dev",
+    "username": "APEX_ANALYTICS",
+    "password": "GChuk8tJbktYJ3n6o9QZZN29Rc"
+  },
+  "folders": {
+    "srcApexFolder": "src/apex",
+    "srcDbFolder": "src/db",
+    "srcFilesFolder": "src/files",
+    "distFolder": "dist"
+  },
+  "sqlclPath": ""
+}

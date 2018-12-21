@@ -1,0 +1,5 @@
+CREATE SEQUENCE analytics_data_seq
+ START WITH     1000
+ INCREMENT BY   1
+ NOCACHE
+ NOCYCLE;

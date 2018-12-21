@@ -1,0 +1,5 @@
+CREATE SEQUENCE apex_app_pages_seq
+ START WITH     1000
+ INCREMENT BY   1
+ NOCACHE
+ NOCYCLE;

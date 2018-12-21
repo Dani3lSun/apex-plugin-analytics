@@ -1,0 +1,46 @@
+{
+  "name": "APEX Analytics",
+  "version": "1.0.0",
+  "description": "Oracle APEX Analytics Plugin",
+  "keywords": [
+    "oracle",
+    "apex",
+    "plugin",
+    "dynamic_action"
+  ],
+  "homepage": "https://github.com/Dani3lSun/apex-plugin-analytics",
+  "bugs": {
+    "url": "https://github.com/Dani3lSun/apex-plugin-analytics/issues",
+    "email": "daniel@danielh.de"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Daniel Hochleitner",
+    "email": "daniel@danielh.de",
+    "url": "https://danielhochleitner.de",
+    "twitter": "Dani3lSun",
+    "donationUrl": "https://www.paypal.me/DanielHochleitnerIT/3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Dani3lSun/apex-plugin-analytics.git"
+  },
+  "oracle": {
+    "versions": [
+      "11.2.0.1",
+      "12.1.0.1",
+      "12.2.0.1"
+    ],
+    "apex": {
+      "versions": [
+        "18.2.0"
+      ],
+      "plugin": {
+        "internalName": "DE.DANIELH.APEXANALYTICS",
+        "type": "dynamic action",
+        "demo": "https://orclapex.io/ords/f?p=280",
+        "previewImage": "https://raw.githubusercontent.com/Dani3lSun/apex-plugin-analytics/master/preview.gif"
+      }
+    }
+  }
+}
