@@ -27,7 +27,7 @@ prompt APPLICATION 280 - APEX Analytics
 -- Application Export:
 --   Application:     280
 --   Name:            APEX Analytics
---   Date and Time:   20:44 Saturday December 22, 2018
+--   Date and Time:   21:24 Tuesday December 25, 2018
 --   Exported By:     DHOCHLEITNER
 --   Flashback:       0
 --   Export Type:     Application Export
@@ -42,7 +42,7 @@ prompt APPLICATION 280 - APEX Analytics
 --     Processes:               14
 --     Regions:                 51
 --     Buttons:                 22
---     Dynamic Actions:         22
+--     Dynamic Actions:         21
 --   Shared Components:
 --     Logic:
 --       Build Options:          1
@@ -116,7 +116,7 @@ wwv_flow_api.create_flow(
 ,p_substitution_string_01=>'APP_NAME'
 ,p_substitution_value_01=>'APEX Analytics'
 ,p_last_updated_by=>'DHOCHLEITNER'
-,p_last_upd_yyyymmddhh24miss=>'20181222172336'
+,p_last_upd_yyyymmddhh24miss=>'20181225212327'
 ,p_file_prefix => nvl(wwv_flow_application_install.get_static_app_file_prefix,'')
 ,p_files_version=>6
 ,p_ui_type_name => null
@@ -5078,7 +5078,7 @@ wwv_flow_api.create_theme(
 ,p_default_popup_transition=>'NONE'
 ,p_default_navbar_list_template=>wwv_flow_api.id(1687174388507687)
 ,p_file_prefix => nvl(wwv_flow_application_install.get_static_theme_file_prefix(42),'#IMAGE_PREFIX#themes/theme_42/1.2/')
-,p_files_version=>62
+,p_files_version=>66
 ,p_icon_library=>'FONTAPEX'
 ,p_javascript_file_urls=>wwv_flow_string.join(wwv_flow_t_varchar2(
 '#IMAGE_PREFIX#libraries/apex/#MIN_DIRECTORY#widget.stickyWidget#MIN#.js?v=#APEX_VERSION#',
@@ -13930,7 +13930,7 @@ wwv_flow_api.create_page(
  p_id=>1
 ,p_user_interface_id=>wwv_flow_api.id(1715903664507699)
 ,p_name=>'Dashboard'
-,p_step_title=>'APEX Analytics'
+,p_step_title=>'Dashboard'
 ,p_warn_on_unsaved_changes=>'N'
 ,p_step_sub_title_type=>'TEXT_WITH_SUBSTITUTIONS'
 ,p_autocomplete_on_off=>'OFF'
@@ -13938,11 +13938,11 @@ wwv_flow_api.create_page(
 ,p_page_template_options=>'#DEFAULT#'
 ,p_protection_level=>'C'
 ,p_last_updated_by=>'DHOCHLEITNER'
-,p_last_upd_yyyymmddhh24miss=>'20181222172336'
+,p_last_upd_yyyymmddhh24miss=>'20181225212327'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(1727386020507712)
-,p_plug_name=>'APEX Analytics - Dashboard'
+,p_plug_name=>'Dashboard'
 ,p_icon_css_classes=>'app-icon'
 ,p_region_template_options=>'#DEFAULT#'
 ,p_plug_template=>wwv_flow_api.id(1636949065507669)
@@ -14023,7 +14023,7 @@ wwv_flow_api.create_jet_chart_series(
 '                   SYSDATE - 36500) AND nvl(to_date(:p1_date_to,',
 '                                                    ''DD-MON-YYYY''),',
 '                                            SYSDATE)',
-'           AND nvl(:p1_agent_with_version,',
+'           AND nvl(:p1_agent_show_version,',
 '                   ''N'') = ''N''',
 '        UNION ALL',
 '        SELECT analytics_data.agent_name || '' '' || analytics_data.agent_version AS agent_name_version',
@@ -14038,10 +14038,10 @@ wwv_flow_api.create_jet_chart_series(
 '                   SYSDATE - 36500) AND nvl(to_date(:p1_date_to,',
 '                                                    ''DD-MON-YYYY''),',
 '                                            SYSDATE)',
-'           AND nvl(:p1_agent_with_version,',
+'           AND nvl(:p1_agent_show_version,',
 '                   ''N'') = ''Y'') iv_analytics_data',
 ' GROUP BY iv_analytics_data.agent_name'))
-,p_ajax_items_to_submit=>'P1_DATE_FROM,P1_DATE_TO,P1_AGENT_WITH_VERSION,P1_APP_ID,P1_ANALYTICS_ID'
+,p_ajax_items_to_submit=>'P1_DATE_FROM,P1_DATE_TO,P1_AGENT_SHOW_VERSION,P1_APP_ID,P1_ANALYTICS_ID'
 ,p_items_value_column_name=>'COUNTER'
 ,p_items_label_column_name=>'AGENT_NAME'
 ,p_color=>'#0572CE'
@@ -14147,7 +14147,7 @@ wwv_flow_api.create_jet_chart_series(
 '                   SYSDATE - 36500) AND nvl(to_date(:p1_date_to,',
 '                                                    ''DD-MON-YYYY''),',
 '                                            SYSDATE)',
-'           AND nvl(:p1_os_with_version,',
+'           AND nvl(:p1_os_show_version,',
 '                   ''N'') = ''N''',
 '        UNION ALL',
 '        SELECT analytics_data.os_name || '' '' || analytics_data.os_version AS os_name_version',
@@ -14162,10 +14162,10 @@ wwv_flow_api.create_jet_chart_series(
 '                   SYSDATE - 36500) AND nvl(to_date(:p1_date_to,',
 '                                                    ''DD-MON-YYYY''),',
 '                                            SYSDATE)',
-'           AND nvl(:p1_os_with_version,',
+'           AND nvl(:p1_os_show_version,',
 '                   ''N'') = ''Y'') iv_analytics_data',
 ' GROUP BY iv_analytics_data.os_name'))
-,p_ajax_items_to_submit=>'P1_DATE_FROM,P1_DATE_TO,P1_OS_WITH_VERSION,P1_APP_ID,P1_ANALYTICS_ID'
+,p_ajax_items_to_submit=>'P1_DATE_FROM,P1_DATE_TO,P1_OS_SHOW_VERSION,P1_APP_ID,P1_ANALYTICS_ID'
 ,p_items_value_column_name=>'COUNTER'
 ,p_items_label_column_name=>'OS_NAME'
 ,p_color=>'#0572CE'
@@ -14944,12 +14944,12 @@ wwv_flow_api.create_page_button(
  p_id=>wwv_flow_api.id(1816947290496736)
 ,p_button_sequence=>10
 ,p_button_plug_id=>wwv_flow_api.id(1815575405496722)
-,p_button_name=>'REMOVE_FILTER'
-,p_button_static_id=>'REMOVE_FILTER'
+,p_button_name=>'CLEAR_FILTER'
+,p_button_static_id=>'CLEAR_FILTER'
 ,p_button_action=>'DEFINED_BY_DA'
 ,p_button_template_options=>'#DEFAULT#:t-Button--iconLeft'
 ,p_button_template_id=>wwv_flow_api.id(1694020984507690)
-,p_button_image_alt=>'Remove Filter'
+,p_button_image_alt=>'Clear Filter'
 ,p_button_position=>'REGION_TEMPLATE_CHANGE'
 ,p_button_execute_validations=>'N'
 ,p_warn_on_unsaved_changes=>null
@@ -15014,11 +15014,11 @@ wwv_flow_api.create_page_item(
 );
 wwv_flow_api.create_page_item(
  p_id=>wwv_flow_api.id(1817304340496740)
-,p_name=>'P1_OS_WITH_VERSION'
+,p_name=>'P1_OS_SHOW_VERSION'
 ,p_item_sequence=>10
 ,p_item_plug_id=>wwv_flow_api.id(1757158558311108)
 ,p_item_default=>'N'
-,p_prompt=>'Show with Version'
+,p_prompt=>'Show Version'
 ,p_display_as=>'NATIVE_YES_NO'
 ,p_grid_label_column_span=>3
 ,p_field_template=>wwv_flow_api.id(1693290181507690)
@@ -15027,11 +15027,11 @@ wwv_flow_api.create_page_item(
 );
 wwv_flow_api.create_page_item(
  p_id=>wwv_flow_api.id(1817605709496743)
-,p_name=>'P1_AGENT_WITH_VERSION'
+,p_name=>'P1_AGENT_SHOW_VERSION'
 ,p_item_sequence=>10
 ,p_item_plug_id=>wwv_flow_api.id(1756660229311103)
 ,p_item_default=>'N'
-,p_prompt=>'Show with Version'
+,p_prompt=>'Show Version'
 ,p_display_as=>'NATIVE_YES_NO'
 ,p_grid_label_column_span=>3
 ,p_field_template=>wwv_flow_api.id(1693290181507690)
@@ -15256,7 +15256,7 @@ wwv_flow_api.create_page_da_event(
 ,p_name=>'RefreshOSChart'
 ,p_event_sequence=>40
 ,p_triggering_element_type=>'ITEM'
-,p_triggering_element=>'P1_OS_WITH_VERSION'
+,p_triggering_element=>'P1_OS_SHOW_VERSION'
 ,p_bind_type=>'bind'
 ,p_bind_event_type=>'change'
 );
@@ -15275,7 +15275,7 @@ wwv_flow_api.create_page_da_event(
 ,p_name=>'RefreshBrowserChart'
 ,p_event_sequence=>50
 ,p_triggering_element_type=>'ITEM'
-,p_triggering_element=>'P1_AGENT_WITH_VERSION'
+,p_triggering_element=>'P1_AGENT_SHOW_VERSION'
 ,p_bind_type=>'bind'
 ,p_bind_event_type=>'change'
 );
@@ -15324,7 +15324,7 @@ wwv_flow_api.create_page_da_action(
 );
 wwv_flow_api.create_page_da_event(
  p_id=>wwv_flow_api.id(2077639903997030)
-,p_name=>'MoveRemoveFilterButtonToHeader'
+,p_name=>'MoveClearFilterButtonToHeader'
 ,p_event_sequence=>70
 ,p_bind_type=>'bind'
 ,p_bind_event_type=>'ready'
@@ -15337,7 +15337,7 @@ wwv_flow_api.create_page_da_action(
 ,p_execute_on_page_init=>'N'
 ,p_action=>'NATIVE_JAVASCRIPT_CODE'
 ,p_attribute_01=>wwv_flow_string.join(wwv_flow_t_varchar2(
-'var elem = $(''button#REMOVE_FILTER'').detach();',
+'var elem = $(''button#CLEAR_FILTER'').detach();',
 '$(''div#FILTER'').find(''div.t-Region-headerItems--buttons'').append(elem);'))
 );
 wwv_flow_api.create_page_da_event(
@@ -15360,17 +15360,8 @@ wwv_flow_api.create_page_da_action(
 ,p_affected_region_id=>wwv_flow_api.id(2079077232997044)
 );
 wwv_flow_api.create_page_da_event(
- p_id=>wwv_flow_api.id(2159703532544815)
-,p_name=>'RefreshMonthActionsChart'
-,p_event_sequence=>90
-,p_triggering_element_type=>'ITEM'
-,p_triggering_element=>'P1_MONTH_ACTIONS_SORT_BY'
-,p_bind_type=>'bind'
-,p_bind_event_type=>'change'
-);
-wwv_flow_api.create_page_da_event(
  p_id=>wwv_flow_api.id(2158894126544806)
-,p_name=>'ExpandFilterItemsHaveValues'
+,p_name=>'ExpandFilterRegion'
 ,p_event_sequence=>100
 ,p_triggering_condition_type=>'JAVASCRIPT_EXPRESSION'
 ,p_triggering_expression=>'$v(''P1_DATE_FROM'').length > 0 || $v(''P1_DATE_TO'').length > 0 || $v(''P1_APP_ID'').length > 0 || $v(''P1_ANALYTICS_ID'').length > 0'
@@ -15400,7 +15391,7 @@ wwv_flow_api.create_page(
 ,p_page_template_options=>'#DEFAULT#'
 ,p_protection_level=>'C'
 ,p_last_updated_by=>'DHOCHLEITNER'
-,p_last_upd_yyyymmddhh24miss=>'20181221003310'
+,p_last_upd_yyyymmddhh24miss=>'20181223201709'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(1761066523311147)
@@ -16056,7 +16047,7 @@ wwv_flow_api.create_ig_report_column(
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(1812859155471735)
-,p_plug_name=>'APEX Analytics - Analytics Data'
+,p_plug_name=>'Analytics Data'
 ,p_icon_css_classes=>'app-icon'
 ,p_region_template_options=>'#DEFAULT#'
 ,p_plug_template=>wwv_flow_api.id(1636949065507669)
@@ -16081,7 +16072,7 @@ wwv_flow_api.create_page(
 ,p_page_template_options=>'#DEFAULT#'
 ,p_protection_level=>'C'
 ,p_last_updated_by=>'DHOCHLEITNER'
-,p_last_upd_yyyymmddhh24miss=>'20181221003333'
+,p_last_upd_yyyymmddhh24miss=>'20181223201725'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(1818161026496748)
@@ -16434,7 +16425,7 @@ wwv_flow_api.create_ig_report_column(
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(3774570204183963)
-,p_plug_name=>'APEX Analytics - Settings'
+,p_plug_name=>'Settings'
 ,p_icon_css_classes=>'app-icon'
 ,p_region_template_options=>'#DEFAULT#'
 ,p_plug_template=>wwv_flow_api.id(1636949065507669)
