@@ -391,33 +391,9 @@ wwv_flow_api.create_plugin(
 '    --',
 '  END get_da_event_name;',
 '  --',
-'  -- Get DA internal event name',
-'  FUNCTION get_workspace_id RETURN NUMBER IS',
-'    --',
-'    l_workspace_id NUMBER;',
-'    l_app_id       NUMBER;',
-'    --',
-'    CURSOR l_cur_workspace IS',
-'      SELECT aa.workspace_id',
-'        FROM apex_applications aa',
-'       WHERE aa.application_id = l_app_id;',
-'    --',
-'  BEGIN',
-'    --',
-'    l_app_id := nv(''APP_ID'');',
-'    --',
-'    OPEN l_cur_workspace;',
-'    FETCH l_cur_workspace',
-'      INTO l_workspace_id;',
-'    CLOSE l_cur_workspace;',
-'    --',
-'    RETURN l_workspace_id;',
-'    --',
-'  END get_workspace_id;',
-'  --',
 'BEGIN',
 '  --',
-'  l_analytics_id_string := get_workspace_id || '':'' || v(''APP_ID'') || '':'' || v(''APP_USER'');',
+'  l_analytics_id_string := v(''INSTANCE_ID'') || '':'' || v(''WORKSPACE_ID'') || '':'' || v(''APP_ID'') || '':'' || v(''APP_USER'');',
 '  l_analytics_id        := sha256(p_msg => l_analytics_id_string);',
 '  -- build component config json',
 '  apex_json.initialize_clob_output;',
@@ -455,7 +431,7 @@ wwv_flow_api.create_plugin(
 ,p_help_text=>'<p>APEX Analytics is a Dynamic Action plugin which collects client / browser information and sends this to an REST endpoint.</p>'
 ,p_version_identifier=>'1.0.0'
 ,p_about_url=>'https://github.com/Dani3lSun/apex-plugin-analytics'
-,p_files_version=>1124
+,p_files_version=>1132
 );
 wwv_flow_api.create_plugin_attribute(
  p_id=>wwv_flow_api.id(6302535965038691)

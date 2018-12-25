@@ -356,33 +356,9 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_plg_pkg IS
       --
     END get_da_event_name;
     --
-    -- Get DA internal event name
-    FUNCTION get_workspace_id RETURN NUMBER IS
-      --
-      l_workspace_id NUMBER;
-      l_app_id       NUMBER;
-      --
-      CURSOR l_cur_workspace IS
-        SELECT aa.workspace_id
-          FROM apex_applications aa
-         WHERE aa.application_id = l_app_id;
-      --
-    BEGIN
-      --
-      l_app_id := nv('APP_ID');
-      --
-      OPEN l_cur_workspace;
-      FETCH l_cur_workspace
-        INTO l_workspace_id;
-      CLOSE l_cur_workspace;
-      --
-      RETURN l_workspace_id;
-      --
-    END get_workspace_id;
-    --
   BEGIN
     --
-    l_analytics_id_string := get_workspace_id || ':' || v('APP_ID') || ':' || v('APP_USER');
+    l_analytics_id_string := v('INSTANCE_ID') || ':' || v('WORKSPACE_ID') || ':' || v('APP_ID') || ':' || v('APP_USER');
     l_analytics_id        := sha256(p_msg => l_analytics_id_string);
     -- build component config json
     apex_json.initialize_clob_output;
