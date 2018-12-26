@@ -27,7 +27,7 @@ prompt APPLICATION 280 - APEX Analytics
 -- Application Export:
 --   Application:     280
 --   Name:            APEX Analytics
---   Date and Time:   23:41 Wednesday December 26, 2018
+--   Date and Time:   23:44 Wednesday December 26, 2018
 --   Exported By:     DHOCHLEITNER
 --   Flashback:       0
 --   Export Type:     Application Export
@@ -117,7 +117,7 @@ wwv_flow_api.create_flow(
 ,p_substitution_string_01=>'APP_NAME'
 ,p_substitution_value_01=>'APEX Analytics'
 ,p_last_updated_by=>'DHOCHLEITNER'
-,p_last_upd_yyyymmddhh24miss=>'20181226234108'
+,p_last_upd_yyyymmddhh24miss=>'20181226234346'
 ,p_file_prefix => nvl(wwv_flow_application_install.get_static_app_file_prefix,'')
 ,p_files_version=>6
 ,p_ui_type_name => null
@@ -21274,7 +21274,7 @@ wwv_flow_api.create_page(
 'By selecting one of the available settings, administrators can potentially change how the application is displayed and/or features available to the end users.</p>',
 '<p>Access to this page should be limited to Administrators only.</p>'))
 ,p_last_updated_by=>'DHOCHLEITNER'
-,p_last_upd_yyyymmddhh24miss=>'20181226233857'
+,p_last_upd_yyyymmddhh24miss=>'20181226234327'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(2162404965544842)
@@ -21410,7 +21410,7 @@ wwv_flow_api.create_page_item(
 ,p_display_as=>'NATIVE_TEXT_FIELD'
 ,p_cSize=>30
 ,p_colspan=>3
-,p_field_template=>wwv_flow_api.id(1693290181507690)
+,p_field_template=>wwv_flow_api.id(1693384741507690)
 ,p_item_template_options=>'#DEFAULT#:t-Form-fieldContainer--stretchInputs'
 ,p_protection_level=>'S'
 ,p_help_text=>wwv_flow_string.join(wwv_flow_t_varchar2(
@@ -21430,7 +21430,7 @@ wwv_flow_api.create_page_item(
 ,p_display_as=>'NATIVE_TEXT_FIELD'
 ,p_cSize=>30
 ,p_colspan=>3
-,p_field_template=>wwv_flow_api.id(1693290181507690)
+,p_field_template=>wwv_flow_api.id(1693384741507690)
 ,p_item_template_options=>'#DEFAULT#:t-Form-fieldContainer--stretchInputs'
 ,p_protection_level=>'S'
 ,p_help_text=>wwv_flow_string.join(wwv_flow_t_varchar2(
