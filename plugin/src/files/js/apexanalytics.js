@@ -154,6 +154,14 @@ apex.da.apexAnalytics = {
         return screenheight || 0;
       },
       /**
+       * Get main language of browser
+       * @return {string}
+       */
+      getBrowserLanguage: function() {
+        var browserLanguage = navigator.languages ? navigator.languages[0] : (navigator.language || navigator.userLanguage);
+        return browserLanguage;
+      },
+      /**
        * Get page load time in seconds for document ready event
        * @param {string} pEvent
        * @return {number}
@@ -193,6 +201,7 @@ apex.da.apexAnalytics = {
               "analyticsId": pAnaliticsId,
               "agentName": parserResult.browser.name,
               "agentVersion": parserResult.browser.version,
+              "agentLanguage": apexAnalytics.getBrowserLanguage(),
               "osName": parserResult.os.name,
               "osVersion": parserResult.os.version,
               "hasTouchSupport": apexAnalytics.hasTouchSupport(),
@@ -209,6 +218,7 @@ apex.da.apexAnalytics = {
             encodedString = pAnaliticsId + stringDivider;
             encodedString += parserResult.browser.name + stringDivider;
             encodedString += parserResult.browser.version + stringDivider;
+            encodedString += apexAnalytics.getBrowserLanguage() + stringDivider;
             encodedString += parserResult.os.name + stringDivider;
             encodedString += parserResult.os.version + stringDivider;
             encodedString += apexAnalytics.hasTouchSupport() + stringDivider;

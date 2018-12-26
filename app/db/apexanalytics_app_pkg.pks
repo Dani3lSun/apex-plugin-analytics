@@ -4,6 +4,7 @@ CREATE OR REPLACE PACKAGE apexanalytics_app_pkg IS
   -- #param p_analytics_id
   -- #param p_agent_name
   -- #param p_agent_version
+  -- #param p_agent_language
   -- #param p_os_name
   -- #param p_os_version
   -- #param p_has_touch_support
@@ -18,6 +19,7 @@ CREATE OR REPLACE PACKAGE apexanalytics_app_pkg IS
   PROCEDURE insert_analytics_data(p_analytics_id         IN analytics_data.analytics_id%TYPE,
                                   p_agent_name           IN analytics_data.agent_name%TYPE,
                                   p_agent_version        IN analytics_data.agent_version%TYPE,
+                                  p_agent_language       IN analytics_data.agent_language%TYPE,
                                   p_os_name              IN analytics_data.os_name%TYPE,
                                   p_os_version           IN analytics_data.os_version%TYPE,
                                   p_has_touch_support    IN analytics_data.has_touch_support%TYPE,
@@ -35,6 +37,7 @@ CREATE OR REPLACE PACKAGE apexanalytics_app_pkg IS
   -- #param p_analytics_id
   -- #param p_agent_name
   -- #param p_agent_version
+  -- #param p_agent_language
   -- #param p_os_name
   -- #param p_os_version
   -- #param p_has_touch_support
@@ -49,6 +52,7 @@ CREATE OR REPLACE PACKAGE apexanalytics_app_pkg IS
                                       p_analytics_id      OUT analytics_data.analytics_id%TYPE,
                                       p_agent_name        OUT analytics_data.agent_name%TYPE,
                                       p_agent_version     OUT analytics_data.agent_version%TYPE,
+                                      p_agent_language    OUT analytics_data.agent_language%TYPE,
                                       p_os_name           OUT analytics_data.os_name%TYPE,
                                       p_os_version        OUT analytics_data.os_version%TYPE,
                                       p_has_touch_support OUT analytics_data.has_touch_support%TYPE,
@@ -64,6 +68,7 @@ CREATE OR REPLACE PACKAGE apexanalytics_app_pkg IS
   -- #param p_analytics_id
   -- #param p_agent_name
   -- #param p_agent_version
+  -- #param p_agent_language
   -- #param p_os_name
   -- #param p_os_version
   -- #param p_has_touch_support
@@ -76,6 +81,7 @@ CREATE OR REPLACE PACKAGE apexanalytics_app_pkg IS
   PROCEDURE check_required_values(p_analytics_id      IN analytics_data.analytics_id%TYPE,
                                   p_agent_name        IN analytics_data.agent_name%TYPE,
                                   p_agent_version     IN analytics_data.agent_version%TYPE,
+                                  p_agent_language    IN analytics_data.agent_language%TYPE,
                                   p_os_name           IN analytics_data.os_name%TYPE,
                                   p_os_version        IN analytics_data.os_version%TYPE,
                                   p_has_touch_support IN analytics_data.has_touch_support%TYPE,

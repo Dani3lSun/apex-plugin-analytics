@@ -4,6 +4,7 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
   -- #param p_analytics_id
   -- #param p_agent_name
   -- #param p_agent_version
+  -- #param p_agent_language
   -- #param p_os_name
   -- #param p_os_version
   -- #param p_has_touch_support
@@ -18,6 +19,7 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
   PROCEDURE insert_analytics_data(p_analytics_id         IN analytics_data.analytics_id%TYPE,
                                   p_agent_name           IN analytics_data.agent_name%TYPE,
                                   p_agent_version        IN analytics_data.agent_version%TYPE,
+                                  p_agent_language       IN analytics_data.agent_language%TYPE,
                                   p_os_name              IN analytics_data.os_name%TYPE,
                                   p_os_version           IN analytics_data.os_version%TYPE,
                                   p_has_touch_support    IN analytics_data.has_touch_support%TYPE,
@@ -36,6 +38,7 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
       (analytics_id,
        agent_name,
        agent_version,
+       agent_language,
        os_name,
        os_version,
        has_touch_support,
@@ -52,6 +55,7 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
       (p_analytics_id,
        p_agent_name,
        p_agent_version,
+       p_agent_language,
        p_os_name,
        p_os_version,
        p_has_touch_support,
@@ -73,6 +77,7 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
   -- #param p_analytics_id
   -- #param p_agent_name
   -- #param p_agent_version
+  -- #param p_agent_language
   -- #param p_os_name
   -- #param p_os_version
   -- #param p_has_touch_support
@@ -87,6 +92,7 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
                                       p_analytics_id      OUT analytics_data.analytics_id%TYPE,
                                       p_agent_name        OUT analytics_data.agent_name%TYPE,
                                       p_agent_version     OUT analytics_data.agent_version%TYPE,
+                                      p_agent_language    OUT analytics_data.agent_language%TYPE,
                                       p_os_name           OUT analytics_data.os_name%TYPE,
                                       p_os_version        OUT analytics_data.os_version%TYPE,
                                       p_has_touch_support OUT analytics_data.has_touch_support%TYPE,
@@ -141,18 +147,19 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
       p_analytics_id      := l_string_values(1);
       p_agent_name        := l_string_values(2);
       p_agent_version     := l_string_values(3);
-      p_os_name           := l_string_values(4);
-      p_os_version        := l_string_values(5);
-      p_has_touch_support := nvl(l_string_values(6),
+      p_agent_language    := l_string_values(4);
+      p_os_name           := l_string_values(5);
+      p_os_version        := l_string_values(6);
+      p_has_touch_support := nvl(l_string_values(7),
                                  'N');
-      p_page_load_time    := nvl(l_string_values(7),
+      p_page_load_time    := nvl(l_string_values(8),
                                  0);
-      p_screen_width      := l_string_values(8);
-      p_screen_height     := l_string_values(9);
-      p_apex_app_id       := l_string_values(10);
-      p_apex_page_id      := l_string_values(11);
-      p_apex_event_name   := l_string_values(12);
-      p_additional_info   := l_string_values(13);
+      p_screen_width      := l_string_values(9);
+      p_screen_height     := l_string_values(10);
+      p_apex_app_id       := l_string_values(11);
+      p_apex_page_id      := l_string_values(12);
+      p_apex_event_name   := l_string_values(13);
+      p_additional_info   := l_string_values(14);
       --                                        
       -- values are directly in JSON payload
     ELSIF l_encoded_call = 'N' THEN
@@ -161,6 +168,8 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
       p_agent_name        := apex_json.get_varchar2(p_path   => 'agentName',
                                                     p_values => l_json_values);
       p_agent_version     := apex_json.get_varchar2(p_path   => 'agentVersion',
+                                                    p_values => l_json_values);
+      p_agent_language    := apex_json.get_varchar2(p_path   => 'agentLanguage',
                                                     p_values => l_json_values);
       p_os_name           := apex_json.get_varchar2(p_path   => 'osName',
                                                     p_values => l_json_values);
@@ -195,6 +204,7 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
   -- #param p_analytics_id
   -- #param p_agent_name
   -- #param p_agent_version
+  -- #param p_agent_language
   -- #param p_os_name
   -- #param p_os_version
   -- #param p_has_touch_support
@@ -207,6 +217,7 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
   PROCEDURE check_required_values(p_analytics_id      IN analytics_data.analytics_id%TYPE,
                                   p_agent_name        IN analytics_data.agent_name%TYPE,
                                   p_agent_version     IN analytics_data.agent_version%TYPE,
+                                  p_agent_language    IN analytics_data.agent_language%TYPE,
                                   p_os_name           IN analytics_data.os_name%TYPE,
                                   p_os_version        IN analytics_data.os_version%TYPE,
                                   p_has_touch_support IN analytics_data.has_touch_support%TYPE,
@@ -222,6 +233,7 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
     IF p_analytics_id IS NULL
        OR p_agent_name IS NULL
        OR p_agent_version IS NULL
+       OR p_agent_language IS NULL
        OR p_os_name IS NULL
        OR p_os_version IS NULL
        OR p_has_touch_support IS NULL
@@ -246,6 +258,7 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
     l_analytics_id         analytics_data.analytics_id%TYPE;
     l_agent_name           analytics_data.agent_name%TYPE;
     l_agent_version        analytics_data.agent_version%TYPE;
+    l_agent_language       analytics_data.agent_language%TYPE;
     l_os_name              analytics_data.os_name%TYPE;
     l_os_version           analytics_data.os_version%TYPE;
     l_has_touch_support    analytics_data.has_touch_support%TYPE;
@@ -268,6 +281,7 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
                                                       p_analytics_id      => l_analytics_id,
                                                       p_agent_name        => l_agent_name,
                                                       p_agent_version     => l_agent_version,
+                                                      p_agent_language    => l_agent_language,
                                                       p_os_name           => l_os_name,
                                                       p_os_version        => l_os_version,
                                                       p_has_touch_support => l_has_touch_support,
@@ -282,6 +296,7 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
       apexanalytics_app_pkg.check_required_values(p_analytics_id      => l_analytics_id,
                                                   p_agent_name        => l_agent_name,
                                                   p_agent_version     => l_agent_version,
+                                                  p_agent_language    => l_agent_language,
                                                   p_os_name           => l_os_name,
                                                   p_os_version        => l_os_version,
                                                   p_has_touch_support => l_has_touch_support,
@@ -302,6 +317,7 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
       apexanalytics_app_pkg.insert_analytics_data(p_analytics_id         => l_analytics_id,
                                                   p_agent_name           => l_agent_name,
                                                   p_agent_version        => l_agent_version,
+                                                  p_agent_language       => l_agent_language,
                                                   p_os_name              => l_os_name,
                                                   p_os_version           => l_os_version,
                                                   p_has_touch_support    => l_has_touch_support,

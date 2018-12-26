@@ -5,6 +5,7 @@ create table ANALYTICS_DATA
   analytics_id         varchar2(128) not null,
   agent_name           varchar2(100) not null,
   agent_version        varchar2(100) not null,
+  agent_language       varchar2(50) not null,
   os_name              varchar2(100) not null,
   os_version           varchar2(100) not null,
   has_touch_support    varchar2(3) not null,
@@ -25,6 +26,7 @@ alter table ANALYTICS_DATA
 create index AD_ANALYTICS_ID_I      on ANALYTICS_DATA (analytics_id);
 create index AD_AGENT_NAME_I        on ANALYTICS_DATA (agent_name);
 create index AD_AGENT_VERSION_I     on ANALYTICS_DATA (agent_version);
+create index AD_AGENT_LANGUAGE_I    on ANALYTICS_DATA (agent_language);
 create index AD_OS_NAME_I           on ANALYTICS_DATA (os_name);
 create index AD_OS_VERSION_I        on ANALYTICS_DATA (os_version);
 create index AD_HAS_TOUCH_SUPPORT_I on ANALYTICS_DATA (has_touch_support);
