@@ -1,21 +1,22 @@
 -- Create table
 create table ANALYTICS_DATA
 (
-  id                number default analytics_data_seq.nextval not null,
-  analytics_id      varchar2(128) not null,
-  agent_name        varchar2(100) not null,
-  agent_version     varchar2(100) not null,
-  os_name           varchar2(100) not null,
-  os_version        varchar2(100) not null,
-  has_touch_support varchar2(3) not null,
-  page_load_time    number default 0 not null,
-  screen_width      number not null,
-  screen_height     number not null,
-  apex_app_id       number not null,
-  apex_page_id      number not null,
-  apex_event_name   varchar2(100) not null,
-  additional_info   varchar2(4000),
-  date_created      date default sysdate not null
+  id                   number default analytics_data_seq.nextval not null,
+  analytics_id         varchar2(128) not null,
+  agent_name           varchar2(100) not null,
+  agent_version        varchar2(100) not null,
+  os_name              varchar2(100) not null,
+  os_version           varchar2(100) not null,
+  has_touch_support    varchar2(3) not null,
+  page_load_time       number default 0 not null,
+  screen_width         number not null,
+  screen_height        number not null,
+  apex_app_id          number not null,
+  apex_page_id         number not null,
+  apex_event_name      varchar2(100) not null,
+  additional_info      varchar2(4000),
+  anonymous_ip_address varchar2(100),
+  date_created         date default sysdate not null
 );
 -- Create/Recreate primary, unique and foreign key constraints 
 alter table ANALYTICS_DATA

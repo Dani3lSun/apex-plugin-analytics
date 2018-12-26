@@ -27,7 +27,7 @@ prompt APPLICATION 280 - APEX Analytics
 -- Application Export:
 --   Application:     280
 --   Name:            APEX Analytics
---   Date and Time:   21:24 Tuesday December 25, 2018
+--   Date and Time:   20:37 Wednesday December 26, 2018
 --   Exported By:     DHOCHLEITNER
 --   Flashback:       0
 --   Export Type:     Application Export
@@ -36,19 +36,20 @@ prompt APPLICATION 280 - APEX Analytics
 --
 
 -- Application Statistics:
---   Pages:                     14
---     Items:                   44
+--   Pages:                     16
+--     Items:                   50
 --     Validations:              4
---     Processes:               14
---     Regions:                 51
---     Buttons:                 22
+--     Processes:               16
+--     Regions:                 58
+--     Buttons:                 25
 --     Dynamic Actions:         21
 --   Shared Components:
 --     Logic:
+--       App Settings:           6
 --       Build Options:          1
 --       Data Loading:           2
 --     Navigation:
---       Lists:                  4
+--       Lists:                  5
 --       Breadcrumbs:            1
 --         Entries:              3
 --     Security:
@@ -116,7 +117,7 @@ wwv_flow_api.create_flow(
 ,p_substitution_string_01=>'APP_NAME'
 ,p_substitution_value_01=>'APEX Analytics'
 ,p_last_updated_by=>'DHOCHLEITNER'
-,p_last_upd_yyyymmddhh24miss=>'20181225212327'
+,p_last_upd_yyyymmddhh24miss=>'20181226203651'
 ,p_file_prefix => nvl(wwv_flow_application_install.get_static_app_file_prefix,'')
 ,p_files_version=>6
 ,p_ui_type_name => null
@@ -150,11 +151,11 @@ wwv_flow_api.create_list_item(
 wwv_flow_api.create_list_item(
  p_id=>wwv_flow_api.id(1962135363712230)
 ,p_list_item_display_sequence=>30
-,p_list_item_link_text=>'Settings'
-,p_list_item_link_target=>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::::'
+,p_list_item_link_text=>'Administration'
+,p_list_item_link_target=>'f?p=&APP_ID.:12:&SESSION.::&DEBUG.::::'
 ,p_list_item_icon=>'fa-gear'
 ,p_list_item_current_type=>'COLON_DELIMITED_PAGE_LIST'
-,p_list_item_current_for_pages=>'3'
+,p_list_item_current_for_pages=>'12,3,13'
 );
 end;
 /
@@ -290,6 +291,33 @@ wwv_flow_api.create_list_item(
 ,p_list_item_display_sequence=>40
 ,p_list_item_link_text=>'Pages - Data Load Results'
 ,p_list_item_link_target=>'f?p=&APP_ID.:11:&SESSION.::&DEBUG.'
+,p_list_item_current_type=>'TARGET_PAGE'
+);
+end;
+/
+prompt --application/shared_components/navigation/lists/administration_menu
+begin
+wwv_flow_api.create_list(
+ p_id=>wwv_flow_api.id(2636852066096502)
+,p_name=>'Administration Menu'
+,p_list_status=>'PUBLIC'
+);
+wwv_flow_api.create_list_item(
+ p_id=>wwv_flow_api.id(2637190000096504)
+,p_list_item_display_sequence=>10
+,p_list_item_link_text=>'Create Application & Page Mappings'
+,p_list_item_link_target=>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::::'
+,p_list_item_icon=>'fa-database-arrow-up'
+,p_list_text_01=>'Create mappings for tracked APP_ID or APP_PAGE_ID values. Useful if you want to see real names on the dashboard'
+,p_list_item_current_type=>'TARGET_PAGE'
+);
+wwv_flow_api.create_list_item(
+ p_id=>wwv_flow_api.id(2644897268167061)
+,p_list_item_display_sequence=>20
+,p_list_item_link_text=>'Application Settings'
+,p_list_item_link_target=>'f?p=&APP_ID.:13:&SESSION.::&DEBUG.::::'
+,p_list_item_icon=>'fa-wrench'
+,p_list_text_01=>'Edit application settings and change the defaults'
 ,p_list_item_current_type=>'TARGET_PAGE'
 );
 end;
@@ -464,14 +492,17 @@ wwv_flow_api.create_plugin_setting(
 );
 end;
 /
-prompt --application/shared_components/security/authorizations/administration_rights
+prompt --application/shared_components/security/authorizations/is_anonymous_ip_tracking_enabled
 begin
 wwv_flow_api.create_security_scheme(
- p_id=>wwv_flow_api.id(1718858319507703)
-,p_name=>'Administration Rights'
+ p_id=>wwv_flow_api.id(2661612316360415)
+,p_name=>'IS_ANONYMOUS_IP_TRACKING_ENABLED'
 ,p_scheme_type=>'NATIVE_FUNCTION_BODY'
-,p_attribute_01=>'return true;'
-,p_error_message=>'Insufficient privileges, user is not an Administrator'
+,p_attribute_01=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'BEGIN',
+'  RETURN apexanalytics_app_pkg.is_anonym_ip_tracking_enabled(p_app_id => :app_id);',
+'END;'))
+,p_error_message=>'Anonymous IP tracking is not enabled'
 ,p_caching=>'BY_USER_BY_PAGE_VIEW'
 );
 end;
@@ -493,7 +524,48 @@ end;
 /
 prompt --application/shared_components/logic/application_settings
 begin
-null;
+wwv_flow_api.create_app_setting(
+ p_id=>wwv_flow_api.id(2621130276523382)
+,p_name=>'ENABLE_ANONYMOUS_IP_TRACKING'
+,p_value=>'N'
+,p_is_required=>'Y'
+,p_valid_values=>'Y,N'
+,p_on_upgrade_keep_value=>true
+);
+wwv_flow_api.create_app_setting(
+ p_id=>wwv_flow_api.id(2621302855533571)
+,p_name=>'REMOVE_LAST_IP_BYTES'
+,p_value=>'1'
+,p_is_required=>'Y'
+,p_valid_values=>'1,2'
+,p_on_upgrade_keep_value=>true
+);
+wwv_flow_api.create_app_setting(
+ p_id=>wwv_flow_api.id(2621641548540325)
+,p_name=>'IPSTACK_GEOLOCATION_API_KEY'
+,p_value=>'XXX'
+,p_is_required=>'Y'
+,p_on_upgrade_keep_value=>true
+);
+wwv_flow_api.create_app_setting(
+ p_id=>wwv_flow_api.id(2621888131541607)
+,p_name=>'IPSTACK_GEOLOCATION_WALLET_PATH'
+,p_is_required=>'N'
+,p_on_upgrade_keep_value=>true
+);
+wwv_flow_api.create_app_setting(
+ p_id=>wwv_flow_api.id(2622095819542709)
+,p_name=>'IPSTACK_GEOLOCATION_WALLET_PWD'
+,p_is_required=>'N'
+,p_on_upgrade_keep_value=>true
+);
+wwv_flow_api.create_app_setting(
+ p_id=>wwv_flow_api.id(2622275213566958)
+,p_name=>'IPSTACK_GEOLOCATION_BASE_URL'
+,p_value=>'http://api.ipstack.com'
+,p_is_required=>'Y'
+,p_on_upgrade_keep_value=>true
+);
 end;
 /
 prompt --application/shared_components/navigation/tabs/standard
@@ -10422,33 +10494,9 @@ wwv_flow_api.create_plugin(
 '    --',
 '  END get_da_event_name;',
 '  --',
-'  -- Get DA internal event name',
-'  FUNCTION get_workspace_id RETURN NUMBER IS',
-'    --',
-'    l_workspace_id NUMBER;',
-'    l_app_id       NUMBER;',
-'    --',
-'    CURSOR l_cur_workspace IS',
-'      SELECT aa.workspace_id',
-'        FROM apex_applications aa',
-'       WHERE aa.application_id = l_app_id;',
-'    --',
-'  BEGIN',
-'    --',
-'    l_app_id := nv(''APP_ID'');',
-'    --',
-'    OPEN l_cur_workspace;',
-'    FETCH l_cur_workspace',
-'      INTO l_workspace_id;',
-'    CLOSE l_cur_workspace;',
-'    --',
-'    RETURN l_workspace_id;',
-'    --',
-'  END get_workspace_id;',
-'  --',
 'BEGIN',
 '  --',
-'  l_analytics_id_string := get_workspace_id || '':'' || v(''APP_ID'') || '':'' || v(''APP_USER'');',
+'  l_analytics_id_string := v(''INSTANCE_ID'') || '':'' || v(''WORKSPACE_ID'') || '':'' || v(''APP_ID'') || '':'' || v(''APP_USER'');',
 '  l_analytics_id        := sha256(p_msg => l_analytics_id_string);',
 '  -- build component config json',
 '  apex_json.initialize_clob_output;',
@@ -10486,7 +10534,7 @@ wwv_flow_api.create_plugin(
 ,p_help_text=>'<p>APEX Analytics is a Dynamic Action plugin which collects client / browser information and sends this to an REST endpoint.</p>'
 ,p_version_identifier=>'1.0.0'
 ,p_about_url=>'https://github.com/Dani3lSun/apex-plugin-analytics'
-,p_files_version=>1124
+,p_files_version=>1132
 );
 wwv_flow_api.create_plugin_attribute(
  p_id=>wwv_flow_api.id(6302535965038691)
@@ -13938,7 +13986,7 @@ wwv_flow_api.create_page(
 ,p_page_template_options=>'#DEFAULT#'
 ,p_protection_level=>'C'
 ,p_last_updated_by=>'DHOCHLEITNER'
-,p_last_upd_yyyymmddhh24miss=>'20181225212327'
+,p_last_upd_yyyymmddhh24miss=>'20181226202936'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(1727386020507712)
@@ -13948,11 +13996,9 @@ wwv_flow_api.create_page_plug(
 ,p_plug_template=>wwv_flow_api.id(1636949065507669)
 ,p_plug_display_sequence=>10
 ,p_plug_display_point=>'REGION_POSITION_01'
-,p_plug_query_num_rows=>15
 ,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
 ,p_attribute_01=>'N'
 ,p_attribute_02=>'HTML'
-,p_attribute_03=>'Y'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(1757660579311113)
@@ -14732,7 +14778,7 @@ wwv_flow_api.create_page_plug(
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(2079533284997049)
 ,p_plug_name=>'Audience by Actions'
-,p_region_template_options=>'#DEFAULT#:is-expanded:t-Region--noUI:t-Region--scrollBody'
+,p_region_template_options=>'#DEFAULT#:is-expanded:t-Region--noUI:t-Region--hiddenOverflow'
 ,p_plug_template=>wwv_flow_api.id(1630558257507667)
 ,p_plug_display_sequence=>40
 ,p_include_in_reg_disp_sel_yn=>'Y'
@@ -14939,6 +14985,208 @@ wwv_flow_api.create_jet_chart_axis(
 ,p_major_tick_rendered=>'on'
 ,p_minor_tick_rendered=>'off'
 ,p_tick_label_rendered=>'on'
+);
+wwv_flow_api.create_page_plug(
+ p_id=>wwv_flow_api.id(2161181753544829)
+,p_plug_name=>'Audience by Location'
+,p_region_template_options=>'#DEFAULT#:is-expanded:t-Region--noUI:t-Region--hiddenOverflow'
+,p_plug_template=>wwv_flow_api.id(1630558257507667)
+,p_plug_display_sequence=>50
+,p_include_in_reg_disp_sel_yn=>'Y'
+,p_plug_display_point=>'BODY'
+,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
+,p_plug_required_role=>wwv_flow_api.id(2661612316360415)
+,p_attribute_01=>'N'
+,p_attribute_02=>'HTML'
+);
+wwv_flow_api.create_page_plug(
+ p_id=>wwv_flow_api.id(2161240992544830)
+,p_plug_name=>'User by Continent'
+,p_parent_plug_id=>wwv_flow_api.id(2161181753544829)
+,p_region_template_options=>'#DEFAULT#:t-Region--noUI:t-Region--hiddenOverflow'
+,p_escape_on_http_output=>'Y'
+,p_plug_template=>wwv_flow_api.id(1641671421507671)
+,p_plug_display_sequence=>10
+,p_plug_display_point=>'BODY'
+,p_plug_source_type=>'NATIVE_JET_CHART'
+,p_plug_query_num_rows=>15
+,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
+);
+wwv_flow_api.create_jet_chart(
+ p_id=>wwv_flow_api.id(2161346671544831)
+,p_region_id=>wwv_flow_api.id(2161240992544830)
+,p_chart_type=>'bar'
+,p_animation_on_display=>'auto'
+,p_animation_on_data_change=>'auto'
+,p_orientation=>'horizontal'
+,p_data_cursor=>'auto'
+,p_data_cursor_behavior=>'auto'
+,p_hide_and_show_behavior=>'none'
+,p_hover_behavior=>'none'
+,p_stack=>'off'
+,p_sorting=>'label-asc'
+,p_fill_multi_series_gaps=>true
+,p_zoom_and_scroll=>'off'
+,p_tooltip_rendered=>'Y'
+,p_show_series_name=>true
+,p_show_group_name=>true
+,p_show_value=>true
+,p_show_label=>true
+,p_legend_rendered=>'on'
+,p_legend_position=>'auto'
+);
+wwv_flow_api.create_jet_chart_series(
+ p_id=>wwv_flow_api.id(2161416392544832)
+,p_chart_id=>wwv_flow_api.id(2161346671544831)
+,p_seq=>10
+,p_name=>'User by Continent'
+,p_data_source_type=>'SQL'
+,p_data_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'SELECT COUNT(*) AS counter,',
+'       nvl(analytics_data_geolocation.continent_name,',
+'           ''Unknown'') AS continent_name',
+'  FROM analytics_data,',
+'       analytics_data_geolocation',
+' WHERE analytics_data.id = analytics_data_geolocation.analytics_data_id(+)',
+'   AND analytics_data.analytics_id = nvl(:p1_analytics_id,',
+'                                         analytics_data.analytics_id)',
+'   AND analytics_data.apex_app_id = nvl(:p1_app_id,',
+'                                        analytics_data.apex_app_id)',
+'   AND trunc(analytics_data.date_created) BETWEEN nvl(to_date(:p1_date_from,',
+'                                                              ''DD-MON-YYYY''),',
+'                                                      SYSDATE - 36500) AND',
+'       nvl(to_date(:p1_date_to,',
+'                   ''DD-MON-YYYY''),',
+'           SYSDATE)',
+' GROUP BY analytics_data_geolocation.continent_name'))
+,p_ajax_items_to_submit=>'P1_DATE_FROM,P1_DATE_TO,P1_APP_ID,P1_ANALYTICS_ID'
+,p_items_value_column_name=>'COUNTER'
+,p_items_label_column_name=>'CONTINENT_NAME'
+,p_color=>'#0572CE'
+,p_assigned_to_y2=>'off'
+,p_items_label_rendered=>false
+);
+wwv_flow_api.create_jet_chart_axis(
+ p_id=>wwv_flow_api.id(2161583331544833)
+,p_chart_id=>wwv_flow_api.id(2161346671544831)
+,p_axis=>'x'
+,p_is_rendered=>'on'
+,p_format_scaling=>'auto'
+,p_scaling=>'linear'
+,p_baseline_scaling=>'zero'
+,p_major_tick_rendered=>'on'
+,p_minor_tick_rendered=>'off'
+,p_tick_label_rendered=>'on'
+,p_tick_label_rotation=>'auto'
+,p_tick_label_position=>'outside'
+);
+wwv_flow_api.create_jet_chart_axis(
+ p_id=>wwv_flow_api.id(2161619598544834)
+,p_chart_id=>wwv_flow_api.id(2161346671544831)
+,p_axis=>'y'
+,p_is_rendered=>'on'
+,p_format_scaling=>'auto'
+,p_scaling=>'linear'
+,p_baseline_scaling=>'zero'
+,p_position=>'auto'
+,p_major_tick_rendered=>'on'
+,p_minor_tick_rendered=>'off'
+,p_tick_label_rendered=>'on'
+);
+wwv_flow_api.create_page_plug(
+ p_id=>wwv_flow_api.id(2161775569544835)
+,p_plug_name=>'User by Country'
+,p_parent_plug_id=>wwv_flow_api.id(2161181753544829)
+,p_region_template_options=>'#DEFAULT#:t-Region--noUI:t-Region--hiddenOverflow'
+,p_escape_on_http_output=>'Y'
+,p_plug_template=>wwv_flow_api.id(1641671421507671)
+,p_plug_display_sequence=>20
+,p_plug_new_grid_row=>false
+,p_plug_display_point=>'BODY'
+,p_plug_source_type=>'NATIVE_JET_CHART'
+,p_plug_query_num_rows=>15
+,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
+);
+wwv_flow_api.create_jet_chart(
+ p_id=>wwv_flow_api.id(2161868935544836)
+,p_region_id=>wwv_flow_api.id(2161775569544835)
+,p_chart_type=>'bar'
+,p_animation_on_display=>'auto'
+,p_animation_on_data_change=>'auto'
+,p_orientation=>'horizontal'
+,p_data_cursor=>'auto'
+,p_data_cursor_behavior=>'auto'
+,p_hide_and_show_behavior=>'none'
+,p_hover_behavior=>'none'
+,p_stack=>'off'
+,p_sorting=>'label-asc'
+,p_fill_multi_series_gaps=>true
+,p_zoom_and_scroll=>'off'
+,p_tooltip_rendered=>'Y'
+,p_show_series_name=>true
+,p_show_group_name=>true
+,p_show_value=>true
+,p_show_label=>true
+,p_legend_rendered=>'on'
+,p_legend_position=>'auto'
+);
+wwv_flow_api.create_jet_chart_series(
+ p_id=>wwv_flow_api.id(2161981491544837)
+,p_chart_id=>wwv_flow_api.id(2161868935544836)
+,p_seq=>10
+,p_name=>'User by Country'
+,p_data_source_type=>'SQL'
+,p_data_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'SELECT COUNT(*) AS counter,',
+'       nvl(analytics_data_geolocation.country_name,',
+'           ''Unknown'') AS country_name',
+'  FROM analytics_data,',
+'       analytics_data_geolocation',
+' WHERE analytics_data.id = analytics_data_geolocation.analytics_data_id(+)',
+'   AND analytics_data.analytics_id = nvl(:p1_analytics_id,',
+'                                         analytics_data.analytics_id)',
+'   AND analytics_data.apex_app_id = nvl(:p1_app_id,',
+'                                        analytics_data.apex_app_id)',
+'   AND trunc(analytics_data.date_created) BETWEEN nvl(to_date(:p1_date_from,',
+'                                                              ''DD-MON-YYYY''),',
+'                                                      SYSDATE - 36500) AND',
+'       nvl(to_date(:p1_date_to,',
+'                   ''DD-MON-YYYY''),',
+'           SYSDATE)',
+' GROUP BY analytics_data_geolocation.country_name'))
+,p_ajax_items_to_submit=>'P1_DATE_FROM,P1_DATE_TO,P1_APP_ID,P1_ANALYTICS_ID'
+,p_items_value_column_name=>'COUNTER'
+,p_items_label_column_name=>'COUNTRY_NAME'
+,p_color=>'#0572CE'
+,p_assigned_to_y2=>'off'
+,p_items_label_rendered=>false
+);
+wwv_flow_api.create_jet_chart_axis(
+ p_id=>wwv_flow_api.id(2162115741544839)
+,p_chart_id=>wwv_flow_api.id(2161868935544836)
+,p_axis=>'y'
+,p_is_rendered=>'on'
+,p_format_scaling=>'auto'
+,p_scaling=>'linear'
+,p_baseline_scaling=>'zero'
+,p_position=>'auto'
+,p_major_tick_rendered=>'on'
+,p_minor_tick_rendered=>'off'
+,p_tick_label_rendered=>'on'
+);
+wwv_flow_api.create_jet_chart_axis(
+ p_id=>wwv_flow_api.id(2162092665544838)
+,p_chart_id=>wwv_flow_api.id(2161868935544836)
+,p_axis=>'x'
+,p_is_rendered=>'on'
+,p_format_scaling=>'auto'
+,p_scaling=>'linear'
+,p_baseline_scaling=>'zero'
+,p_major_tick_rendered=>'on'
+,p_minor_tick_rendered=>'off'
+,p_tick_label_rendered=>'on'
+,p_tick_label_rotation=>'auto'
+,p_tick_label_position=>'outside'
 );
 wwv_flow_api.create_page_button(
  p_id=>wwv_flow_api.id(1816947290496736)
@@ -15216,6 +15464,26 @@ wwv_flow_api.create_page_da_action(
 ,p_affected_elements_type=>'REGION'
 ,p_affected_region_id=>wwv_flow_api.id(2079077232997044)
 );
+wwv_flow_api.create_page_da_action(
+ p_id=>wwv_flow_api.id(2654985101335502)
+,p_event_id=>wwv_flow_api.id(1815828544496725)
+,p_event_result=>'TRUE'
+,p_action_sequence=>110
+,p_execute_on_page_init=>'N'
+,p_action=>'NATIVE_REFRESH'
+,p_affected_elements_type=>'REGION'
+,p_affected_region_id=>wwv_flow_api.id(2161240992544830)
+);
+wwv_flow_api.create_page_da_action(
+ p_id=>wwv_flow_api.id(2655026345335503)
+,p_event_id=>wwv_flow_api.id(1815828544496725)
+,p_event_result=>'TRUE'
+,p_action_sequence=>120
+,p_execute_on_page_init=>'N'
+,p_action=>'NATIVE_REFRESH'
+,p_affected_elements_type=>'REGION'
+,p_affected_region_id=>wwv_flow_api.id(2161775569544835)
+);
 wwv_flow_api.create_page_da_event(
  p_id=>wwv_flow_api.id(1817073651496737)
 ,p_name=>'RemoveFilter'
@@ -15391,7 +15659,7 @@ wwv_flow_api.create_page(
 ,p_page_template_options=>'#DEFAULT#'
 ,p_protection_level=>'C'
 ,p_last_updated_by=>'DHOCHLEITNER'
-,p_last_upd_yyyymmddhh24miss=>'20181223201709'
+,p_last_upd_yyyymmddhh24miss=>'20181226202738'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(1761066523311147)
@@ -15418,6 +15686,7 @@ wwv_flow_api.create_page_plug(
 '       analytics_data.apex_event_name,',
 '       analytics_data.additional_info,',
 '       analytics_data.date_created,',
+'       analytics_data.anonymous_ip_address,',
 '       (SELECT apex_apps.app_name',
 '          FROM apex_apps',
 '         WHERE apex_apps.app_id = analytics_data.apex_app_id) AS app_name,',
@@ -15799,7 +16068,7 @@ wwv_flow_api.create_region_column(
 ,p_item_type=>'NATIVE_DATE_PICKER'
 ,p_heading=>'Date Created'
 ,p_heading_alignment=>'CENTER'
-,p_display_sequence=>150
+,p_display_sequence=>160
 ,p_value_alignment=>'CENTER'
 ,p_attribute_04=>'button'
 ,p_attribute_05=>'N'
@@ -15826,7 +16095,7 @@ wwv_flow_api.create_region_column(
 ,p_item_type=>'NATIVE_LINK'
 ,p_heading=>'App Name'
 ,p_heading_alignment=>'LEFT'
-,p_display_sequence=>160
+,p_display_sequence=>170
 ,p_value_alignment=>'LEFT'
 ,p_link_target=>'f?p=&APP_ID.:1:&SESSION.::&DEBUG.:RP,1:P1_APP_ID:&APEX_APP_ID.'
 ,p_link_text=>'&APP_NAME.'
@@ -15852,7 +16121,7 @@ wwv_flow_api.create_region_column(
 ,p_item_type=>'NATIVE_TEXTAREA'
 ,p_heading=>'Page Title'
 ,p_heading_alignment=>'LEFT'
-,p_display_sequence=>170
+,p_display_sequence=>180
 ,p_value_alignment=>'LEFT'
 ,p_attribute_01=>'Y'
 ,p_attribute_02=>'N'
@@ -15870,6 +16139,36 @@ wwv_flow_api.create_region_column(
 ,p_is_primary_key=>false
 ,p_duplicate_value=>true
 ,p_include_in_export=>true
+);
+wwv_flow_api.create_region_column(
+ p_id=>wwv_flow_api.id(2161051870544828)
+,p_name=>'ANONYMOUS_IP_ADDRESS'
+,p_source_type=>'DB_COLUMN'
+,p_source_expression=>'ANONYMOUS_IP_ADDRESS'
+,p_data_type=>'VARCHAR2'
+,p_is_query_only=>false
+,p_item_type=>'NATIVE_TEXTAREA'
+,p_heading=>'Anonymous IP Address'
+,p_heading_alignment=>'LEFT'
+,p_display_sequence=>150
+,p_value_alignment=>'LEFT'
+,p_attribute_01=>'Y'
+,p_attribute_02=>'N'
+,p_attribute_03=>'N'
+,p_attribute_04=>'BOTH'
+,p_is_required=>false
+,p_max_length=>100
+,p_enable_filter=>true
+,p_filter_operators=>'C:S:CASE_INSENSITIVE:REGEXP'
+,p_filter_is_required=>false
+,p_filter_text_case=>'MIXED'
+,p_filter_lov_type=>'NONE'
+,p_use_as_row_header=>false
+,p_enable_sort_group=>false
+,p_is_primary_key=>false
+,p_duplicate_value=>true
+,p_include_in_export=>true
+,p_security_scheme=>wwv_flow_api.id(2661612316360415)
 );
 wwv_flow_api.create_interactive_grid(
  p_id=>wwv_flow_api.id(1761171537311148)
@@ -16032,7 +16331,7 @@ wwv_flow_api.create_ig_report_column(
 wwv_flow_api.create_ig_report_column(
  p_id=>wwv_flow_api.id(2111436635231608)
 ,p_view_id=>wwv_flow_api.id(1819135025506152)
-,p_display_seq=>15
+,p_display_seq=>14
 ,p_column_id=>wwv_flow_api.id(2076867164997022)
 ,p_is_visible=>true
 ,p_is_frozen=>false
@@ -16040,9 +16339,17 @@ wwv_flow_api.create_ig_report_column(
 wwv_flow_api.create_ig_report_column(
  p_id=>wwv_flow_api.id(2111803377231617)
 ,p_view_id=>wwv_flow_api.id(1819135025506152)
-,p_display_seq=>16
+,p_display_seq=>15
 ,p_column_id=>wwv_flow_api.id(2076979010997023)
 ,p_is_visible=>true
+,p_is_frozen=>false
+);
+wwv_flow_api.create_ig_report_column(
+ p_id=>wwv_flow_api.id(2623965266821026)
+,p_view_id=>wwv_flow_api.id(1819135025506152)
+,p_display_seq=>16
+,p_column_id=>wwv_flow_api.id(2161051870544828)
+,p_is_visible=>false
 ,p_is_frozen=>false
 );
 wwv_flow_api.create_page_plug(
@@ -16064,15 +16371,15 @@ begin
 wwv_flow_api.create_page(
  p_id=>3
 ,p_user_interface_id=>wwv_flow_api.id(1715903664507699)
-,p_name=>'Settings'
-,p_step_title=>'Settings'
+,p_name=>'Create Application & Page Mappings'
+,p_step_title=>'Create Application & Page Mappings'
 ,p_step_sub_title=>'Settings'
 ,p_step_sub_title_type=>'TEXT_WITH_SUBSTITUTIONS'
 ,p_autocomplete_on_off=>'OFF'
 ,p_page_template_options=>'#DEFAULT#'
 ,p_protection_level=>'C'
 ,p_last_updated_by=>'DHOCHLEITNER'
-,p_last_upd_yyyymmddhh24miss=>'20181223201725'
+,p_last_upd_yyyymmddhh24miss=>'20181226195325'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(1818161026496748)
@@ -16425,7 +16732,7 @@ wwv_flow_api.create_ig_report_column(
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(3774570204183963)
-,p_plug_name=>'Settings'
+,p_plug_name=>'Create Application & Page Mappings'
 ,p_icon_css_classes=>'app-icon'
 ,p_region_template_options=>'#DEFAULT#'
 ,p_plug_template=>wwv_flow_api.id(1636949065507669)
@@ -16436,8 +16743,21 @@ wwv_flow_api.create_page_plug(
 ,p_attribute_02=>'HTML'
 );
 wwv_flow_api.create_page_button(
- p_id=>wwv_flow_api.id(1817923220496746)
+ p_id=>wwv_flow_api.id(2162289916544840)
 ,p_button_sequence=>10
+,p_button_plug_id=>wwv_flow_api.id(3774570204183963)
+,p_button_name=>'BACK'
+,p_button_action=>'REDIRECT_PAGE'
+,p_button_template_options=>'#DEFAULT#:t-Button--iconLeft'
+,p_button_template_id=>wwv_flow_api.id(1694020984507690)
+,p_button_image_alt=>'Back'
+,p_button_position=>'REGION_TEMPLATE_NEXT'
+,p_button_redirect_url=>'f?p=&APP_ID.:12:&SESSION.::&DEBUG.:RP::'
+,p_icon_css_classes=>'fa-angle-left'
+);
+wwv_flow_api.create_page_button(
+ p_id=>wwv_flow_api.id(1817923220496746)
+,p_button_sequence=>20
 ,p_button_plug_id=>wwv_flow_api.id(3774570204183963)
 ,p_button_name=>'IMPORT_APPS'
 ,p_button_action=>'REDIRECT_PAGE'
@@ -16451,7 +16771,7 @@ wwv_flow_api.create_page_button(
 );
 wwv_flow_api.create_page_button(
  p_id=>wwv_flow_api.id(1818081561496747)
-,p_button_sequence=>20
+,p_button_sequence=>30
 ,p_button_plug_id=>wwv_flow_api.id(3774570204183963)
 ,p_button_name=>'IMPORT_APP_PAGES'
 ,p_button_action=>'REDIRECT_PAGE'
@@ -20774,6 +21094,266 @@ wwv_flow_api.create_page_process(
 ,p_error_display_location=>'INLINE_IN_NOTIFICATION'
 ,p_process_when=>'CREATE,SAVE,DELETE'
 ,p_process_when_type=>'REQUEST_IN_CONDITION'
+);
+end;
+/
+prompt --application/pages/page_00012
+begin
+wwv_flow_api.create_page(
+ p_id=>12
+,p_user_interface_id=>wwv_flow_api.id(1715903664507699)
+,p_name=>'Administration'
+,p_step_title=>'Administration'
+,p_step_sub_title=>'Administration'
+,p_step_sub_title_type=>'TEXT_WITH_SUBSTITUTIONS'
+,p_autocomplete_on_off=>'OFF'
+,p_page_template_options=>'#DEFAULT#'
+,p_protection_level=>'C'
+,p_deep_linking=>'N'
+,p_help_text=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'<p>The administration page allows application owners (Administrators) to configure the application and maintain common data used across the application.',
+'By selecting one of the available settings, administrators can potentially change how the application is displayed and/or features available to the end users.</p>',
+'<p>Access to this page should be limited to Administrators only.</p>'))
+,p_last_updated_by=>'DHOCHLEITNER'
+,p_last_upd_yyyymmddhh24miss=>'20181226195226'
+);
+wwv_flow_api.create_page_plug(
+ p_id=>wwv_flow_api.id(5252518628541282)
+,p_plug_name=>'Administration Menu'
+,p_region_template_options=>'#DEFAULT#:t-Region--noPadding:t-Region--hideHeader:t-Region--hiddenOverflow'
+,p_component_template_options=>'#DEFAULT#:u-colors'
+,p_plug_template=>wwv_flow_api.id(1641671421507671)
+,p_plug_display_sequence=>10
+,p_plug_display_point=>'BODY'
+,p_list_id=>wwv_flow_api.id(2636852066096502)
+,p_plug_source_type=>'NATIVE_LIST'
+,p_list_template_id=>wwv_flow_api.id(1683370465507686)
+,p_plug_query_num_rows=>15
+,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
+);
+wwv_flow_api.create_page_plug(
+ p_id=>wwv_flow_api.id(6416145976328043)
+,p_plug_name=>'Administration'
+,p_icon_css_classes=>'app-icon'
+,p_region_template_options=>'#DEFAULT#'
+,p_plug_template=>wwv_flow_api.id(1636949065507669)
+,p_plug_display_sequence=>10
+,p_plug_display_point=>'REGION_POSITION_01'
+,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
+,p_attribute_01=>'N'
+,p_attribute_02=>'HTML'
+);
+end;
+/
+prompt --application/pages/page_00013
+begin
+wwv_flow_api.create_page(
+ p_id=>13
+,p_user_interface_id=>wwv_flow_api.id(1715903664507699)
+,p_name=>'Application Settings'
+,p_step_title=>'Application Settings'
+,p_step_sub_title=>'Application Settings'
+,p_step_sub_title_type=>'TEXT_WITH_SUBSTITUTIONS'
+,p_autocomplete_on_off=>'OFF'
+,p_page_template_options=>'#DEFAULT#'
+,p_protection_level=>'C'
+,p_deep_linking=>'N'
+,p_help_text=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'<p>The administration page allows application owners (Administrators) to configure the application and maintain common data used across the application.',
+'By selecting one of the available settings, administrators can potentially change how the application is displayed and/or features available to the end users.</p>',
+'<p>Access to this page should be limited to Administrators only.</p>'))
+,p_last_updated_by=>'DHOCHLEITNER'
+,p_last_upd_yyyymmddhh24miss=>'20181226202341'
+);
+wwv_flow_api.create_page_plug(
+ p_id=>wwv_flow_api.id(2162404965544842)
+,p_plug_name=>'Item Container'
+,p_region_template_options=>'#DEFAULT#:t-Region--removeHeader:t-Region--hiddenOverflow:t-Form--labelsAbove'
+,p_plug_template=>wwv_flow_api.id(1641671421507671)
+,p_plug_display_sequence=>10
+,p_include_in_reg_disp_sel_yn=>'Y'
+,p_plug_display_point=>'BODY'
+,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
+,p_attribute_01=>'N'
+,p_attribute_02=>'HTML'
+);
+wwv_flow_api.create_page_plug(
+ p_id=>wwv_flow_api.id(9061488426503865)
+,p_plug_name=>'Application Settings'
+,p_icon_css_classes=>'app-icon'
+,p_region_template_options=>'#DEFAULT#'
+,p_plug_template=>wwv_flow_api.id(1636949065507669)
+,p_plug_display_sequence=>10
+,p_plug_display_point=>'REGION_POSITION_01'
+,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
+,p_attribute_01=>'N'
+,p_attribute_02=>'HTML'
+);
+wwv_flow_api.create_page_button(
+ p_id=>wwv_flow_api.id(2162314118544841)
+,p_button_sequence=>10
+,p_button_plug_id=>wwv_flow_api.id(9061488426503865)
+,p_button_name=>'BACK'
+,p_button_action=>'REDIRECT_PAGE'
+,p_button_template_options=>'#DEFAULT#:t-Button--iconLeft'
+,p_button_template_id=>wwv_flow_api.id(1694020984507690)
+,p_button_image_alt=>'Back'
+,p_button_position=>'REGION_TEMPLATE_NEXT'
+,p_button_redirect_url=>'f?p=&APP_ID.:12:&SESSION.::&DEBUG.:RP::'
+,p_icon_css_classes=>'fa-angle-left'
+);
+wwv_flow_api.create_page_button(
+ p_id=>wwv_flow_api.id(2163261800544850)
+,p_button_sequence=>20
+,p_button_plug_id=>wwv_flow_api.id(9061488426503865)
+,p_button_name=>'SAVE'
+,p_button_action=>'SUBMIT'
+,p_button_template_options=>'#DEFAULT#:t-Button--success:t-Button--iconLeft'
+,p_button_template_id=>wwv_flow_api.id(1694020984507690)
+,p_button_image_alt=>'Save'
+,p_button_position=>'REGION_TEMPLATE_NEXT'
+,p_icon_css_classes=>'fa-save'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(2162542197544843)
+,p_name=>'P13_ENABLE_ANONYM_IP_TRACKING'
+,p_is_required=>true
+,p_item_sequence=>10
+,p_item_plug_id=>wwv_flow_api.id(2162404965544842)
+,p_prompt=>'Enable Anonymous IP Tracking'
+,p_display_as=>'NATIVE_YES_NO'
+,p_colspan=>6
+,p_field_template=>wwv_flow_api.id(1693652323507690)
+,p_item_template_options=>'#DEFAULT#'
+,p_protection_level=>'S'
+,p_attribute_01=>'APPLICATION'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(2162680510544844)
+,p_name=>'P13_REMOVE_LAST_IP_BYTES'
+,p_is_required=>true
+,p_item_sequence=>20
+,p_item_plug_id=>wwv_flow_api.id(2162404965544842)
+,p_prompt=>'Bytes to remove & mask from IP address'
+,p_display_as=>'NATIVE_NUMBER_FIELD'
+,p_cSize=>30
+,p_colspan=>3
+,p_field_template=>wwv_flow_api.id(1693652323507690)
+,p_item_template_options=>'#DEFAULT#:t-Form-fieldContainer--stretchInputs'
+,p_protection_level=>'S'
+,p_attribute_03=>'right'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(2162786281544845)
+,p_name=>'P13_IPSTACK_BASE_URL'
+,p_is_required=>true
+,p_item_sequence=>30
+,p_item_plug_id=>wwv_flow_api.id(2162404965544842)
+,p_prompt=>'ipstack Geolocation API - Base URL'
+,p_display_as=>'NATIVE_TEXT_FIELD'
+,p_cSize=>30
+,p_colspan=>3
+,p_field_template=>wwv_flow_api.id(1693652323507690)
+,p_item_template_options=>'#DEFAULT#:t-Form-fieldContainer--stretchInputs'
+,p_protection_level=>'S'
+,p_attribute_01=>'N'
+,p_attribute_02=>'N'
+,p_attribute_04=>'TEXT'
+,p_attribute_05=>'BOTH'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(2162882151544846)
+,p_name=>'P13_IPSTACK_API_KEY'
+,p_is_required=>true
+,p_item_sequence=>40
+,p_item_plug_id=>wwv_flow_api.id(2162404965544842)
+,p_prompt=>'ipstack Geolocation API - API Key'
+,p_display_as=>'NATIVE_TEXT_FIELD'
+,p_cSize=>30
+,p_colspan=>3
+,p_field_template=>wwv_flow_api.id(1693652323507690)
+,p_item_template_options=>'#DEFAULT#:t-Form-fieldContainer--stretchInputs'
+,p_protection_level=>'S'
+,p_attribute_01=>'N'
+,p_attribute_02=>'N'
+,p_attribute_04=>'TEXT'
+,p_attribute_05=>'BOTH'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(2162954999544847)
+,p_name=>'P13_IPSTACK_WALLET_PATH'
+,p_item_sequence=>50
+,p_item_plug_id=>wwv_flow_api.id(2162404965544842)
+,p_prompt=>'ipstack Geolocation API - Wallet Path'
+,p_display_as=>'NATIVE_TEXT_FIELD'
+,p_cSize=>30
+,p_colspan=>3
+,p_field_template=>wwv_flow_api.id(1693290181507690)
+,p_item_template_options=>'#DEFAULT#:t-Form-fieldContainer--stretchInputs'
+,p_protection_level=>'S'
+,p_attribute_01=>'N'
+,p_attribute_02=>'N'
+,p_attribute_04=>'TEXT'
+,p_attribute_05=>'BOTH'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(2163087402544848)
+,p_name=>'P13_IPSTACK_WALLET_PWD'
+,p_item_sequence=>60
+,p_item_plug_id=>wwv_flow_api.id(2162404965544842)
+,p_prompt=>'ipstack Geolocation API - Wallet Password'
+,p_display_as=>'NATIVE_TEXT_FIELD'
+,p_cSize=>30
+,p_colspan=>3
+,p_field_template=>wwv_flow_api.id(1693290181507690)
+,p_item_template_options=>'#DEFAULT#:t-Form-fieldContainer--stretchInputs'
+,p_protection_level=>'S'
+,p_attribute_01=>'N'
+,p_attribute_02=>'N'
+,p_attribute_04=>'TEXT'
+,p_attribute_05=>'BOTH'
+);
+wwv_flow_api.create_page_process(
+ p_id=>wwv_flow_api.id(2654830031335501)
+,p_process_sequence=>10
+,p_process_point=>'AFTER_SUBMIT'
+,p_process_type=>'NATIVE_PLSQL'
+,p_process_name=>'SAVE_APP_SETTING_DATA'
+,p_process_sql_clob=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'BEGIN',
+'  apex_app_setting.set_value(p_name  => ''ENABLE_ANONYMOUS_IP_TRACKING'',',
+'                             p_value => :p13_enable_anonym_ip_tracking);',
+'  apex_app_setting.set_value(p_name  => ''REMOVE_LAST_IP_BYTES'',',
+'                             p_value => :p13_remove_last_ip_bytes);',
+'  apex_app_setting.set_value(p_name  => ''IPSTACK_GEOLOCATION_BASE_URL'',',
+'                             p_value => :p13_ipstack_base_url);',
+'  apex_app_setting.set_value(p_name  => ''IPSTACK_GEOLOCATION_API_KEY'',',
+'                             p_value => :p13_ipstack_api_key);',
+'  apex_app_setting.set_value(p_name  => ''IPSTACK_GEOLOCATION_WALLET_PATH'',',
+'                             p_value => :p13_ipstack_wallet_path);',
+'  apex_app_setting.set_value(p_name  => ''IPSTACK_GEOLOCATION_WALLET_PWD'',',
+'                             p_value => :p13_ipstack_wallet_pwd);',
+'END;'))
+,p_error_display_location=>'INLINE_IN_NOTIFICATION'
+,p_process_when_button_id=>wwv_flow_api.id(2163261800544850)
+,p_process_success_message=>'Saved successfully'
+);
+wwv_flow_api.create_page_process(
+ p_id=>wwv_flow_api.id(2163118368544849)
+,p_process_sequence=>10
+,p_process_point=>'BEFORE_HEADER'
+,p_process_type=>'NATIVE_PLSQL'
+,p_process_name=>'GET_APP_SETTING_DATA'
+,p_process_sql_clob=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'BEGIN',
+'  :p13_enable_anonym_ip_tracking := apex_app_setting.get_value(p_name => ''ENABLE_ANONYMOUS_IP_TRACKING'');',
+'  :p13_remove_last_ip_bytes      := apex_app_setting.get_value(p_name => ''REMOVE_LAST_IP_BYTES'');',
+'  :p13_ipstack_base_url          := apex_app_setting.get_value(p_name => ''IPSTACK_GEOLOCATION_BASE_URL'');',
+'  :p13_ipstack_api_key           := apex_app_setting.get_value(p_name => ''IPSTACK_GEOLOCATION_API_KEY'');',
+'  :p13_ipstack_wallet_path       := apex_app_setting.get_value(p_name => ''IPSTACK_GEOLOCATION_WALLET_PATH'');',
+'  :p13_ipstack_wallet_pwd        := apex_app_setting.get_value(p_name => ''IPSTACK_GEOLOCATION_WALLET_PWD'');',
+'END;'))
+,p_error_display_location=>'INLINE_IN_NOTIFICATION'
 );
 end;
 /
