@@ -27,7 +27,7 @@ prompt APPLICATION 280 - APEX Analytics
 -- Application Export:
 --   Application:     280
 --   Name:            APEX Analytics
---   Date and Time:   20:37 Wednesday December 26, 2018
+--   Date and Time:   20:53 Wednesday December 26, 2018
 --   Exported By:     DHOCHLEITNER
 --   Flashback:       0
 --   Export Type:     Application Export
@@ -117,7 +117,7 @@ wwv_flow_api.create_flow(
 ,p_substitution_string_01=>'APP_NAME'
 ,p_substitution_value_01=>'APEX Analytics'
 ,p_last_updated_by=>'DHOCHLEITNER'
-,p_last_upd_yyyymmddhh24miss=>'20181226203651'
+,p_last_upd_yyyymmddhh24miss=>'20181226205330'
 ,p_file_prefix => nvl(wwv_flow_application_install.get_static_app_file_prefix,'')
 ,p_files_version=>6
 ,p_ui_type_name => null
@@ -13986,7 +13986,7 @@ wwv_flow_api.create_page(
 ,p_page_template_options=>'#DEFAULT#'
 ,p_protection_level=>'C'
 ,p_last_updated_by=>'DHOCHLEITNER'
-,p_last_upd_yyyymmddhh24miss=>'20181226202936'
+,p_last_upd_yyyymmddhh24miss=>'20181226204819'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(1727386020507712)
@@ -15015,25 +15015,21 @@ wwv_flow_api.create_page_plug(
 wwv_flow_api.create_jet_chart(
  p_id=>wwv_flow_api.id(2161346671544831)
 ,p_region_id=>wwv_flow_api.id(2161240992544830)
-,p_chart_type=>'bar'
+,p_chart_type=>'pie'
 ,p_animation_on_display=>'auto'
 ,p_animation_on_data_change=>'auto'
-,p_orientation=>'horizontal'
 ,p_data_cursor=>'auto'
 ,p_data_cursor_behavior=>'auto'
 ,p_hide_and_show_behavior=>'none'
 ,p_hover_behavior=>'none'
-,p_stack=>'off'
-,p_sorting=>'label-asc'
-,p_fill_multi_series_gaps=>true
-,p_zoom_and_scroll=>'off'
+,p_value_format_scaling=>'auto'
 ,p_tooltip_rendered=>'Y'
 ,p_show_series_name=>true
-,p_show_group_name=>true
 ,p_show_value=>true
-,p_show_label=>true
 ,p_legend_rendered=>'on'
 ,p_legend_position=>'auto'
+,p_pie_other_threshold=>0
+,p_pie_selection_effect=>'highlight'
 );
 wwv_flow_api.create_jet_chart_series(
  p_id=>wwv_flow_api.id(2161416392544832)
@@ -15062,36 +15058,7 @@ wwv_flow_api.create_jet_chart_series(
 ,p_ajax_items_to_submit=>'P1_DATE_FROM,P1_DATE_TO,P1_APP_ID,P1_ANALYTICS_ID'
 ,p_items_value_column_name=>'COUNTER'
 ,p_items_label_column_name=>'CONTINENT_NAME'
-,p_color=>'#0572CE'
-,p_assigned_to_y2=>'off'
 ,p_items_label_rendered=>false
-);
-wwv_flow_api.create_jet_chart_axis(
- p_id=>wwv_flow_api.id(2161583331544833)
-,p_chart_id=>wwv_flow_api.id(2161346671544831)
-,p_axis=>'x'
-,p_is_rendered=>'on'
-,p_format_scaling=>'auto'
-,p_scaling=>'linear'
-,p_baseline_scaling=>'zero'
-,p_major_tick_rendered=>'on'
-,p_minor_tick_rendered=>'off'
-,p_tick_label_rendered=>'on'
-,p_tick_label_rotation=>'auto'
-,p_tick_label_position=>'outside'
-);
-wwv_flow_api.create_jet_chart_axis(
- p_id=>wwv_flow_api.id(2161619598544834)
-,p_chart_id=>wwv_flow_api.id(2161346671544831)
-,p_axis=>'y'
-,p_is_rendered=>'on'
-,p_format_scaling=>'auto'
-,p_scaling=>'linear'
-,p_baseline_scaling=>'zero'
-,p_position=>'auto'
-,p_major_tick_rendered=>'on'
-,p_minor_tick_rendered=>'off'
-,p_tick_label_rendered=>'on'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(2161775569544835)
