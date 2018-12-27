@@ -584,7 +584,7 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
     l_continent_name      analytics_data_geolocation.continent_name%TYPE;
     l_country_code        analytics_data_geolocation.country_code%TYPE;
     l_country_name        analytics_data_geolocation.country_name%TYPE;
-    -- all ip addresses which are not already stored + only process 100 at once (e.g. dbms_scheduler)
+    -- all ip addresses which are not already stored + only process 150 at once (e.g. dbms_scheduler)
     CURSOR l_cur_analytics_data_ip IS
       SELECT iv_analytics_data.id,
              iv_analytics_data.prepared_ip
@@ -596,7 +596,7 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
                  AND analytics_data.id NOT IN (SELECT analytics_data_geolocation.analytics_data_id
                                                  FROM analytics_data_geolocation)
                ORDER BY analytics_data.id) iv_analytics_data
-       WHERE iv_analytics_data.row_num <= 100;
+       WHERE iv_analytics_data.row_num <= 150;
     --
   BEGIN
     -- check if ip tracking is enabled
@@ -615,7 +615,7 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
          AND l_ipstack_api_key IS NOT NULL THEN
         --
         FOR l_rec_analytics_data_ip IN l_cur_analytics_data_ip LOOP
-          -- REST call
+          -- REST call to ipstack
           apexanalytics_app_pkg.get_ipstack_geolocation(p_base_url       => l_ipstack_base_url,
                                                         p_ip_address     => l_rec_analytics_data_ip.prepared_ip,
                                                         p_api_key        => l_ipstack_api_key,
