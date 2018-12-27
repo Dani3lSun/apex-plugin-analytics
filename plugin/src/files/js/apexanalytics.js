@@ -283,6 +283,11 @@ apex.da.apexAnalytics = {
     }; // end namespace apexAnalytics
 
     // call real pluginHandler function
-    apexAnalytics.pluginHandler(pOptions);
+    try {
+      apexAnalytics.pluginHandler(pOptions);
+    } catch (err) {
+      apex.debug.log('apexAnalytics.pluginHandler error', err);
+      apexAnalytics.setErrorCountUp();
+    }
   }
 };
