@@ -568,7 +568,6 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
        p_continent_name,
        p_country_code,
        p_country_name);
-  
     --
   END insert_ad_geolocation;
   --
@@ -648,6 +647,94 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
       ROLLBACK;
       --
   END process_ad_geolocation;
+  --
+  -- Insert data into CUSTOM_ANALYTIC_QUERIES table
+  -- #param p_query_name
+  -- #param p_custom_query
+  PROCEDURE insert_custom_analytic_queries(p_query_name   IN custom_analytic_queries.query_name%TYPE,
+                                           p_custom_query IN custom_analytic_queries.custom_query%TYPE) IS
+    --
+  BEGIN
+    --
+    INSERT INTO custom_analytic_queries
+      (query_name,
+       custom_query)
+    VALUES
+      (p_query_name,
+       p_custom_query);
+    --
+  END insert_custom_analytic_queries;
+  --
+  -- Update data from CUSTOM_ANALYTIC_QUERIES table
+  -- #param p_id
+  -- #param p_query_name
+  -- #param p_custom_query
+  PROCEDURE update_custom_analytic_queries(p_id           IN custom_analytic_queries.id%TYPE,
+                                           p_query_name   IN custom_analytic_queries.query_name%TYPE,
+                                           p_custom_query IN custom_analytic_queries.custom_query%TYPE) IS
+    --
+  BEGIN
+    --
+    UPDATE custom_analytic_queries
+       SET query_name   = p_query_name,
+           custom_query = p_custom_query
+     WHERE custom_analytic_queries.id = p_id;
+    --
+  END update_custom_analytic_queries;
+  --
+  -- Check if a SQL query is valid
+  -- #param p_query
+  -- #return BOOLEAN
+  FUNCTION is_query_valid(p_query IN CLOB) RETURN BOOLEAN IS
+    --
+    l_cursor NUMBER := dbms_sql.open_cursor;
+    l_return BOOLEAN := FALSE;
+    --
+  BEGIN
+    -- Check if query starts with SELECT Keyword
+    IF substr(upper(ltrim(p_query)),
+              1,
+              6) != 'SELECT' THEN
+      RETURN FALSE;
+    END IF;
+    -- Check SQL query
+    BEGIN
+      EXECUTE IMMEDIATE 'alter session set cursor_sharing=force';
+      dbms_sql.parse(l_cursor,
+                     p_query,
+                     dbms_sql.native);
+      EXECUTE IMMEDIATE 'alter session set cursor_sharing=exact';
+      l_return := TRUE;
+    EXCEPTION
+      WHEN OTHERS THEN
+        EXECUTE IMMEDIATE 'alter session set cursor_sharing=exact';
+        dbms_sql.close_cursor(l_cursor);
+        l_return := FALSE;
+    END;
+    --
+    RETURN l_return;
+    --
+  END is_query_valid;
+  --
+  -- Create APEX collection from custom query from CUSTOM_ANALYTIC_QUERIES table
+  -- #param p_id
+  -- #return CLOB
+  PROCEDURE create_custom_analytic_coll(p_id IN custom_analytic_queries.id%TYPE) IS
+    --
+    l_custom_query CLOB;
+    --
+  BEGIN
+    --
+    SELECT custom_analytic_queries.custom_query
+      INTO l_custom_query
+      FROM custom_analytic_queries
+     WHERE custom_analytic_queries.id = p_id;
+    --
+    apex_collection.create_collection_from_query_b(p_collection_name    => 'CUSTOM_ANALYTIC_QUERY',
+                                                   p_query              => l_custom_query,
+                                                   p_truncate_if_exists => 'YES');
+    --
+  END create_custom_analytic_coll;
   --
 END apexanalytics_app_pkg;
 /

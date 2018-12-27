@@ -156,5 +156,28 @@ CREATE OR REPLACE PACKAGE apexanalytics_app_pkg IS
   -- #param p_app_id
   PROCEDURE process_ad_geolocation(p_app_id IN NUMBER);
   --
+  -- Insert data into CUSTOM_ANALYTIC_QUERIES table
+  -- #param p_query_name
+  -- #param p_custom_query
+  PROCEDURE insert_custom_analytic_queries(p_query_name   IN custom_analytic_queries.query_name%TYPE,
+                                           p_custom_query IN custom_analytic_queries.custom_query%TYPE);
+  --
+  -- Update data from CUSTOM_ANALYTIC_QUERIES table
+  -- #param p_id
+  -- #param p_query_name
+  -- #param p_custom_query
+  PROCEDURE update_custom_analytic_queries(p_id           IN custom_analytic_queries.id%TYPE,
+                                           p_query_name   IN custom_analytic_queries.query_name%TYPE,
+                                           p_custom_query IN custom_analytic_queries.custom_query%TYPE);
+  --
+  -- Check if a SQL query is valid
+  -- #param p_query
+  -- #return BOOLEAN
+  FUNCTION is_query_valid(p_query IN CLOB) RETURN BOOLEAN;
+  --
+  -- Create APEX collection from custom query from CUSTOM_ANALYTIC_QUERIES table
+  -- #param p_id
+  PROCEDURE create_custom_analytic_coll(p_id IN custom_analytic_queries.id%TYPE);
+  --
 END apexanalytics_app_pkg;
 /
