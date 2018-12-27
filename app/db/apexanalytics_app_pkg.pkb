@@ -716,9 +716,115 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
     --
   END is_query_valid;
   --
+  -- Check if used tables in query are allowed to select
+  -- #param p_query
+  -- #param p_allowed_tables (comma separated)
+  -- #return BOOLEAN
+  FUNCTION is_table_access_allowed(p_query          IN CLOB,
+                                   p_allowed_tables IN VARCHAR2) RETURN BOOLEAN IS
+    --
+    l_return BOOLEAN := FALSE;
+    --
+    CURSOR l_cur_xplan_tables IS
+      SELECT iv_xplan_tables.table_name,
+             iv_xplan_tables.plan_id
+        FROM (SELECT DISTINCT CASE
+                                WHEN pt.object_type = 'INDEX' THEN
+                                 ai.table_owner
+                                ELSE
+                                 pt.object_owner
+                              END AS owner,
+                              CASE
+                                WHEN pt.object_type = 'INDEX' THEN
+                                 ai.table_name
+                                ELSE
+                                 pt.object_name
+                              END AS table_name,
+                              pt.plan_id
+                FROM plan_table pt
+                LEFT JOIN all_indexes ai
+                  ON ai.owner = pt.object_owner
+                 AND ai.index_name = pt.object_name
+               WHERE pt.object_type IN ('TABLE',
+                                        'INDEX')) iv_xplan_tables
+       WHERE iv_xplan_tables.table_name IN (SELECT column_value
+                                              FROM TABLE(apex_string.split(upper(p_allowed_tables),
+                                                                           ',')));
+    l_rec_xplan_tables l_cur_xplan_tables%ROWTYPE;
+    --
+  BEGIN
+    -- generate explain plan for query
+    EXECUTE IMMEDIATE 'explain plan for ' || p_query;
+    -- check if table names or index names referencing to tables are used in plan_table
+    OPEN l_cur_xplan_tables;
+    FETCH l_cur_xplan_tables
+      INTO l_rec_xplan_tables;
+    --
+    IF l_cur_xplan_tables%FOUND THEN
+      --
+      DELETE plan_table
+       WHERE plan_id = l_rec_xplan_tables.plan_id;
+      --
+      l_return := TRUE;
+    ELSE
+      l_return := FALSE;
+    END IF;
+    CLOSE l_cur_xplan_tables;
+    --
+    RETURN l_return;
+    --
+  END is_table_access_allowed;
+  --
+  -- Get column names from SQL query
+  -- #param p_query
+  -- #return VARCHAR2
+  FUNCTION get_query_columns(p_query IN CLOB) RETURN VARCHAR2 IS
+    --
+    l_cursor         NUMBER;
+    l_col_cnt        NUMBER;
+    l_columns        dbms_sql.desc_tab;
+    l_is_query_valid BOOLEAN := FALSE;
+    l_query_columns  apex_t_varchar2;
+    --
+  BEGIN
+    -- check if query is valid
+    l_is_query_valid := apexanalytics_app_pkg.is_query_valid(p_query => p_query);
+    --
+    IF l_is_query_valid THEN
+      -- parse SQL and describe columns
+      l_cursor := dbms_sql.open_cursor;
+      dbms_sql.parse(l_cursor,
+                     p_query,
+                     dbms_sql.native);
+      dbms_sql.describe_columns(l_cursor,
+                                l_col_cnt,
+                                l_columns);
+      -- loop over columns
+      FOR i IN 1 .. l_columns.count LOOP
+        apex_string.push(l_query_columns,
+                         l_columns(i).col_name);
+      END LOOP;
+      -- close cursor
+      IF dbms_sql.is_open(l_cursor) THEN
+        dbms_sql.close_cursor(l_cursor);
+      END IF;
+    END IF;
+    --
+    RETURN apex_string.join(p_table => l_query_columns,
+                            p_sep   => ',');
+    --
+  EXCEPTION
+    WHEN OTHERS THEN
+      -- close cursor
+      IF dbms_sql.is_open(l_cursor) THEN
+        dbms_sql.close_cursor(l_cursor);
+      END IF;
+      --
+      RAISE;
+  END get_query_columns;
+  --
   -- Create APEX collection from custom query from CUSTOM_ANALYTIC_QUERIES table
   -- #param p_id
-  -- #return CLOB
   PROCEDURE create_custom_analytic_coll(p_id IN custom_analytic_queries.id%TYPE) IS
     --
     l_custom_query CLOB;
@@ -735,6 +841,172 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
                                                    p_truncate_if_exists => 'YES');
     --
   END create_custom_analytic_coll;
+  --
+  -- Get header labels for custom analytic query and APEX collection
+  -- #param p_id
+  -- #param p_col_header_01
+  -- #param p_col_header_02
+  -- #param p_col_header_03
+  -- #param p_col_header_04
+  -- #param p_col_header_05
+  -- #param p_col_header_06
+  -- #param p_col_header_07
+  -- #param p_col_header_08
+  -- #param p_col_header_09
+  -- #param p_col_header_10
+  -- #param p_col_header_11
+  -- #param p_col_header_12
+  -- #param p_col_header_13
+  -- #param p_col_header_14
+  -- #param p_col_header_15
+  -- #param p_col_header_16
+  -- #param p_col_header_17
+  -- #param p_col_header_18
+  -- #param p_col_header_19
+  -- #param p_col_header_20
+  PROCEDURE get_custom_analytic_col_header(p_id            IN custom_analytic_queries.id%TYPE,
+                                           p_col_header_01 OUT VARCHAR2,
+                                           p_col_header_02 OUT VARCHAR2,
+                                           p_col_header_03 OUT VARCHAR2,
+                                           p_col_header_04 OUT VARCHAR2,
+                                           p_col_header_05 OUT VARCHAR2,
+                                           p_col_header_06 OUT VARCHAR2,
+                                           p_col_header_07 OUT VARCHAR2,
+                                           p_col_header_08 OUT VARCHAR2,
+                                           p_col_header_09 OUT VARCHAR2,
+                                           p_col_header_10 OUT VARCHAR2,
+                                           p_col_header_11 OUT VARCHAR2,
+                                           p_col_header_12 OUT VARCHAR2,
+                                           p_col_header_13 OUT VARCHAR2,
+                                           p_col_header_14 OUT VARCHAR2,
+                                           p_col_header_15 OUT VARCHAR2,
+                                           p_col_header_16 OUT VARCHAR2,
+                                           p_col_header_17 OUT VARCHAR2,
+                                           p_col_header_18 OUT VARCHAR2,
+                                           p_col_header_19 OUT VARCHAR2,
+                                           p_col_header_20 OUT VARCHAR2) IS
+    --
+    l_count         NUMBER := 0;
+    l_col_header_01 VARCHAR2(100);
+    l_col_header_02 VARCHAR2(100);
+    l_col_header_03 VARCHAR2(100);
+    l_col_header_04 VARCHAR2(100);
+    l_col_header_05 VARCHAR2(100);
+    l_col_header_06 VARCHAR2(100);
+    l_col_header_07 VARCHAR2(100);
+    l_col_header_08 VARCHAR2(100);
+    l_col_header_09 VARCHAR2(100);
+    l_col_header_10 VARCHAR2(100);
+    l_col_header_11 VARCHAR2(100);
+    l_col_header_12 VARCHAR2(100);
+    l_col_header_13 VARCHAR2(100);
+    l_col_header_14 VARCHAR2(100);
+    l_col_header_15 VARCHAR2(100);
+    l_col_header_16 VARCHAR2(100);
+    l_col_header_17 VARCHAR2(100);
+    l_col_header_18 VARCHAR2(100);
+    l_col_header_19 VARCHAR2(100);
+    l_col_header_20 VARCHAR2(100);
+    --
+    CURSOR l_cur_column_header IS
+      SELECT iv_query_columns.column_value
+        FROM TABLE(apex_string.split(apexanalytics_app_pkg.get_query_columns(p_query => (SELECT custom_analytic_queries.custom_query
+                                                                                           FROM custom_analytic_queries
+                                                                                          WHERE custom_analytic_queries.id = p_id)),
+                                     ',')) iv_query_columns;
+    --
+  BEGIN
+    --
+    FOR l_rec_column_header IN l_cur_column_header LOOP
+      l_count := l_count + 1;
+      --
+      IF l_count = 1 THEN
+        l_col_header_01 := l_rec_column_header.column_value;
+      ELSIF l_count = 2 THEN
+        l_col_header_02 := l_rec_column_header.column_value;
+      ELSIF l_count = 3 THEN
+        l_col_header_03 := l_rec_column_header.column_value;
+      ELSIF l_count = 4 THEN
+        l_col_header_04 := l_rec_column_header.column_value;
+      ELSIF l_count = 5 THEN
+        l_col_header_05 := l_rec_column_header.column_value;
+      ELSIF l_count = 6 THEN
+        l_col_header_06 := l_rec_column_header.column_value;
+      ELSIF l_count = 7 THEN
+        l_col_header_07 := l_rec_column_header.column_value;
+      ELSIF l_count = 8 THEN
+        l_col_header_08 := l_rec_column_header.column_value;
+      ELSIF l_count = 9 THEN
+        l_col_header_09 := l_rec_column_header.column_value;
+      ELSIF l_count = 10 THEN
+        l_col_header_10 := l_rec_column_header.column_value;
+      ELSIF l_count = 11 THEN
+        l_col_header_11 := l_rec_column_header.column_value;
+      ELSIF l_count = 12 THEN
+        l_col_header_12 := l_rec_column_header.column_value;
+      ELSIF l_count = 13 THEN
+        l_col_header_13 := l_rec_column_header.column_value;
+      ELSIF l_count = 14 THEN
+        l_col_header_14 := l_rec_column_header.column_value;
+      ELSIF l_count = 15 THEN
+        l_col_header_15 := l_rec_column_header.column_value;
+      ELSIF l_count = 16 THEN
+        l_col_header_16 := l_rec_column_header.column_value;
+      ELSIF l_count = 17 THEN
+        l_col_header_17 := l_rec_column_header.column_value;
+      ELSIF l_count = 18 THEN
+        l_col_header_18 := l_rec_column_header.column_value;
+      ELSIF l_count = 19 THEN
+        l_col_header_19 := l_rec_column_header.column_value;
+      ELSIF l_count = 20 THEN
+        l_col_header_20 := l_rec_column_header.column_value;
+      ELSE
+        EXIT;
+      END IF;
+    END LOOP;
+    --
+    p_col_header_01 := nvl(l_col_header_01,
+                           'C01');
+    p_col_header_02 := nvl(l_col_header_02,
+                           'C02');
+    p_col_header_03 := nvl(l_col_header_03,
+                           'C03');
+    p_col_header_04 := nvl(l_col_header_04,
+                           'C04');
+    p_col_header_05 := nvl(l_col_header_05,
+                           'C05');
+    p_col_header_06 := nvl(l_col_header_06,
+                           'C06');
+    p_col_header_07 := nvl(l_col_header_07,
+                           'C07');
+    p_col_header_08 := nvl(l_col_header_08,
+                           'C08');
+    p_col_header_09 := nvl(l_col_header_09,
+                           'C09');
+    p_col_header_10 := nvl(l_col_header_10,
+                           'C10');
+    p_col_header_11 := nvl(l_col_header_11,
+                           'C11');
+    p_col_header_12 := nvl(l_col_header_12,
+                           'C12');
+    p_col_header_13 := nvl(l_col_header_13,
+                           'C13');
+    p_col_header_14 := nvl(l_col_header_14,
+                           'C14');
+    p_col_header_15 := nvl(l_col_header_15,
+                           'C15');
+    p_col_header_16 := nvl(l_col_header_16,
+                           'C16');
+    p_col_header_17 := nvl(l_col_header_17,
+                           'C17');
+    p_col_header_18 := nvl(l_col_header_18,
+                           'C18');
+    p_col_header_19 := nvl(l_col_header_19,
+                           'C19');
+    p_col_header_20 := nvl(l_col_header_20,
+                           'C20');
+    --
+  END get_custom_analytic_col_header;
   --
 END apexanalytics_app_pkg;
 /

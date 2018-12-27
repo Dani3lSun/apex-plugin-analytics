@@ -4,12 +4,14 @@ SPOOL install.log
 @analytics_data_seq.sql
 @analytics_data_geolocation_seq.sql
 @apex_app_pages_seq.sql
+@custom_analytic_queries_seq.sql
 
 -- create tables
 @analytics_data_table.sql
 @analytics_data_geolocation_table.sql
 @apex_apps_table.sql
 @apex_app_pages_table.sql
+@custom_analytic_queries_table.sql
 
 -- create packages
 @apexanalytics_app_pkg.pks

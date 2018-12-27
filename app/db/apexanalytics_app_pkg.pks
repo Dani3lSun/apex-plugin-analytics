@@ -175,9 +175,65 @@ CREATE OR REPLACE PACKAGE apexanalytics_app_pkg IS
   -- #return BOOLEAN
   FUNCTION is_query_valid(p_query IN CLOB) RETURN BOOLEAN;
   --
+  -- Check if used tables in query are allowed to select
+  -- #param p_query
+  -- #param p_allowed_tables (comma separated)
+  -- #return BOOLEAN
+  FUNCTION is_table_access_allowed(p_query          IN CLOB,
+                                   p_allowed_tables IN VARCHAR2) RETURN BOOLEAN;
+  --
+  -- Get column names from SQL query
+  -- #param p_query
+  -- #return VARCHAR2
+  FUNCTION get_query_columns(p_query IN CLOB) RETURN VARCHAR2;
+  --
   -- Create APEX collection from custom query from CUSTOM_ANALYTIC_QUERIES table
   -- #param p_id
   PROCEDURE create_custom_analytic_coll(p_id IN custom_analytic_queries.id%TYPE);
+  --
+  -- Get header labels for custom analytic query and APEX collection
+  -- #param p_id
+  -- #param p_col_header_01
+  -- #param p_col_header_02
+  -- #param p_col_header_03
+  -- #param p_col_header_04
+  -- #param p_col_header_05
+  -- #param p_col_header_06
+  -- #param p_col_header_07
+  -- #param p_col_header_08
+  -- #param p_col_header_09
+  -- #param p_col_header_10
+  -- #param p_col_header_11
+  -- #param p_col_header_12
+  -- #param p_col_header_13
+  -- #param p_col_header_14
+  -- #param p_col_header_15
+  -- #param p_col_header_16
+  -- #param p_col_header_17
+  -- #param p_col_header_18
+  -- #param p_col_header_19
+  -- #param p_col_header_20
+  PROCEDURE get_custom_analytic_col_header(p_id            IN custom_analytic_queries.id%TYPE,
+                                           p_col_header_01 OUT VARCHAR2,
+                                           p_col_header_02 OUT VARCHAR2,
+                                           p_col_header_03 OUT VARCHAR2,
+                                           p_col_header_04 OUT VARCHAR2,
+                                           p_col_header_05 OUT VARCHAR2,
+                                           p_col_header_06 OUT VARCHAR2,
+                                           p_col_header_07 OUT VARCHAR2,
+                                           p_col_header_08 OUT VARCHAR2,
+                                           p_col_header_09 OUT VARCHAR2,
+                                           p_col_header_10 OUT VARCHAR2,
+                                           p_col_header_11 OUT VARCHAR2,
+                                           p_col_header_12 OUT VARCHAR2,
+                                           p_col_header_13 OUT VARCHAR2,
+                                           p_col_header_14 OUT VARCHAR2,
+                                           p_col_header_15 OUT VARCHAR2,
+                                           p_col_header_16 OUT VARCHAR2,
+                                           p_col_header_17 OUT VARCHAR2,
+                                           p_col_header_18 OUT VARCHAR2,
+                                           p_col_header_19 OUT VARCHAR2,
+                                           p_col_header_20 OUT VARCHAR2);
   --
 END apexanalytics_app_pkg;
 /
