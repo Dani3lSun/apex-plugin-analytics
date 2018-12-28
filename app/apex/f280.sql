@@ -27,7 +27,7 @@ prompt APPLICATION 280 - APEX Analytics
 -- Application Export:
 --   Application:     280
 --   Name:            APEX Analytics
---   Date and Time:   13:46 Friday December 28, 2018
+--   Date and Time:   14:59 Friday December 28, 2018
 --   Exported By:     DHOCHLEITNER
 --   Flashback:       0
 --   Export Type:     Application Export
@@ -37,7 +37,7 @@ prompt APPLICATION 280 - APEX Analytics
 
 -- Application Statistics:
 --   Pages:                     20
---     Items:                   75
+--     Items:                   76
 --     Validations:              7
 --     Processes:               22
 --     Regions:                 70
@@ -119,7 +119,7 @@ wwv_flow_api.create_flow(
 ,p_substitution_string_01=>'APP_NAME'
 ,p_substitution_value_01=>'APEX Analytics'
 ,p_last_updated_by=>'DHOCHLEITNER'
-,p_last_upd_yyyymmddhh24miss=>'20181228134616'
+,p_last_upd_yyyymmddhh24miss=>'20181228145922'
 ,p_file_prefix => nvl(wwv_flow_application_install.get_static_app_file_prefix,'')
 ,p_files_version=>6
 ,p_ui_type_name => null
@@ -19298,7 +19298,7 @@ wwv_flow_api.create_page(
 ,p_page_template_options=>'#DEFAULT#'
 ,p_protection_level=>'C'
 ,p_last_updated_by=>'DHOCHLEITNER'
-,p_last_upd_yyyymmddhh24miss=>'20181227171143'
+,p_last_upd_yyyymmddhh24miss=>'20181228145607'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(1727386020507712)
@@ -19367,7 +19367,14 @@ wwv_flow_api.create_jet_chart_series(
 ,p_name=>'User by Browser'
 ,p_data_source_type=>'SQL'
 ,p_data_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
-'SELECT COUNT(*) AS counter,',
+'SELECT CASE',
+'         WHEN nvl(:p1_show_percentage,',
+'                  ''N'') = ''Y'' THEN',
+'          round(100 * ratio_to_report(COUNT(*)) over(),',
+'                2)',
+'         ELSE',
+'          COUNT(*)',
+'       END AS counter,',
 '       iv_analytics_data.agent_name',
 '  FROM (SELECT analytics_data.agent_name',
 '          FROM analytics_data',
@@ -19399,7 +19406,7 @@ wwv_flow_api.create_jet_chart_series(
 '           AND nvl(:p1_agent_show_version,',
 '                   ''N'') = ''Y'') iv_analytics_data',
 ' GROUP BY iv_analytics_data.agent_name'))
-,p_ajax_items_to_submit=>'P1_DATE_FROM,P1_DATE_TO,P1_AGENT_SHOW_VERSION,P1_APP_ID,P1_ANALYTICS_ID'
+,p_ajax_items_to_submit=>'P1_DATE_FROM,P1_DATE_TO,P1_AGENT_SHOW_VERSION,P1_APP_ID,P1_ANALYTICS_ID,P1_SHOW_PERCENTAGE'
 ,p_items_value_column_name=>'COUNTER'
 ,p_items_label_column_name=>'AGENT_NAME'
 ,p_color=>'#0572CE'
@@ -19491,7 +19498,14 @@ wwv_flow_api.create_jet_chart_series(
 ,p_name=>'User by Operating System'
 ,p_data_source_type=>'SQL'
 ,p_data_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
-'SELECT COUNT(*) AS counter,',
+'SELECT CASE',
+'         WHEN nvl(:p1_show_percentage,',
+'                  ''N'') = ''Y'' THEN',
+'          round(100 * ratio_to_report(COUNT(*)) over(),',
+'                2)',
+'         ELSE',
+'          COUNT(*)',
+'       END AS counter,',
 '       iv_analytics_data.os_name',
 '  FROM (SELECT analytics_data.os_name',
 '          FROM analytics_data',
@@ -19523,7 +19537,7 @@ wwv_flow_api.create_jet_chart_series(
 '           AND nvl(:p1_os_show_version,',
 '                   ''N'') = ''Y'') iv_analytics_data',
 ' GROUP BY iv_analytics_data.os_name'))
-,p_ajax_items_to_submit=>'P1_DATE_FROM,P1_DATE_TO,P1_OS_SHOW_VERSION,P1_APP_ID,P1_ANALYTICS_ID'
+,p_ajax_items_to_submit=>'P1_DATE_FROM,P1_DATE_TO,P1_OS_SHOW_VERSION,P1_APP_ID,P1_ANALYTICS_ID,P1_SHOW_PERCENTAGE'
 ,p_items_value_column_name=>'COUNTER'
 ,p_items_label_column_name=>'OS_NAME'
 ,p_color=>'#0572CE'
@@ -19596,7 +19610,14 @@ wwv_flow_api.create_jet_chart_series(
 ,p_name=>'User by Screen Resolution'
 ,p_data_source_type=>'SQL'
 ,p_data_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
-'SELECT COUNT(*) AS counter,',
+'SELECT CASE',
+'         WHEN nvl(:p1_show_percentage,',
+'                  ''N'') = ''Y'' THEN',
+'          round(100 * ratio_to_report(COUNT(*)) over(),',
+'                2)',
+'         ELSE',
+'          COUNT(*)',
+'       END AS counter,',
 '       iv_analytics_data.display_val',
 '  FROM (SELECT analytics_data.screen_width || ''x'' || analytics_data.screen_height AS display_val',
 '          FROM analytics_data',
@@ -19611,7 +19632,7 @@ wwv_flow_api.create_jet_chart_series(
 '                                                    ''DD-MON-YYYY''),',
 '                                            SYSDATE)) iv_analytics_data',
 ' GROUP BY iv_analytics_data.display_val'))
-,p_ajax_items_to_submit=>'P1_DATE_FROM,P1_DATE_TO,P1_APP_ID,P1_ANALYTICS_ID'
+,p_ajax_items_to_submit=>'P1_DATE_FROM,P1_DATE_TO,P1_APP_ID,P1_ANALYTICS_ID,P1_SHOW_PERCENTAGE'
 ,p_items_value_column_name=>'COUNTER'
 ,p_items_label_column_name=>'DISPLAY_VAL'
 ,p_items_label_rendered=>false
@@ -19660,7 +19681,14 @@ wwv_flow_api.create_jet_chart_series(
 ,p_name=>'User by Touch Support'
 ,p_data_source_type=>'SQL'
 ,p_data_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
-'SELECT COUNT(*) AS counter,',
+'SELECT CASE',
+'         WHEN nvl(:p1_show_percentage,',
+'                  ''N'') = ''Y'' THEN',
+'          round(100 * ratio_to_report(COUNT(*)) over(),',
+'                2)',
+'         ELSE',
+'          COUNT(*)',
+'       END AS counter,',
 '       iv_analytics_data.display_val',
 '  FROM (SELECT decode(analytics_data.has_touch_support,',
 '                      ''Y'',',
@@ -19679,7 +19707,7 @@ wwv_flow_api.create_jet_chart_series(
 '                                                    ''DD-MON-YYYY''),',
 '                                            SYSDATE)) iv_analytics_data',
 ' GROUP BY iv_analytics_data.display_val'))
-,p_ajax_items_to_submit=>'P1_DATE_FROM,P1_DATE_TO,P1_APP_ID,P1_ANALYTICS_ID'
+,p_ajax_items_to_submit=>'P1_DATE_FROM,P1_DATE_TO,P1_APP_ID,P1_ANALYTICS_ID,P1_SHOW_PERCENTAGE'
 ,p_items_value_column_name=>'COUNTER'
 ,p_items_label_column_name=>'DISPLAY_VAL'
 ,p_color=>'#0572CE'
@@ -19757,7 +19785,14 @@ wwv_flow_api.create_jet_chart_series(
 ,p_name=>'User by Language'
 ,p_data_source_type=>'SQL'
 ,p_data_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
-'SELECT COUNT(*) AS counter,',
+'SELECT CASE',
+'         WHEN nvl(:p1_show_percentage,',
+'                  ''N'') = ''Y'' THEN',
+'          round(100 * ratio_to_report(COUNT(*)) over(),',
+'                2)',
+'         ELSE',
+'          COUNT(*)',
+'       END AS counter,',
 '       analytics_data.agent_language',
 '  FROM analytics_data',
 ' WHERE analytics_data.analytics_id = nvl(:p1_analytics_id,',
@@ -19771,7 +19806,7 @@ wwv_flow_api.create_jet_chart_series(
 '                   ''DD-MON-YYYY''),',
 '           SYSDATE)',
 ' GROUP BY analytics_data.agent_language'))
-,p_ajax_items_to_submit=>'P1_DATE_FROM,P1_DATE_TO,P1_APP_ID,P1_ANALYTICS_ID'
+,p_ajax_items_to_submit=>'P1_DATE_FROM,P1_DATE_TO,P1_APP_ID,P1_ANALYTICS_ID,P1_SHOW_PERCENTAGE'
 ,p_items_value_column_name=>'COUNTER'
 ,p_items_label_column_name=>'AGENT_LANGUAGE'
 ,p_color=>'#0572CE'
@@ -19860,7 +19895,14 @@ wwv_flow_api.create_jet_chart_series(
 ,p_name=>'User by Application'
 ,p_data_source_type=>'SQL'
 ,p_data_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
-'SELECT COUNT(*) AS counter,',
+'SELECT CASE',
+'         WHEN nvl(:p1_show_percentage,',
+'                  ''N'') = ''Y'' THEN',
+'          round(100 * ratio_to_report(COUNT(*)) over(),',
+'                2)',
+'         ELSE',
+'          COUNT(*)',
+'       END AS counter,',
 '       iv_analytics_data.display_val',
 '  FROM (SELECT nvl(apex_apps.app_name,',
 '                   analytics_data.apex_app_id) AS display_val',
@@ -19878,7 +19920,7 @@ wwv_flow_api.create_jet_chart_series(
 '                                                    ''DD-MON-YYYY''),',
 '                                            SYSDATE)) iv_analytics_data',
 ' GROUP BY iv_analytics_data.display_val'))
-,p_ajax_items_to_submit=>'P1_DATE_FROM,P1_DATE_TO,P1_APP_ID,P1_ANALYTICS_ID'
+,p_ajax_items_to_submit=>'P1_DATE_FROM,P1_DATE_TO,P1_APP_ID,P1_ANALYTICS_ID,P1_SHOW_PERCENTAGE'
 ,p_items_value_column_name=>'COUNTER'
 ,p_items_label_column_name=>'DISPLAY_VAL'
 ,p_color=>'#0572CE'
@@ -19955,7 +19997,14 @@ wwv_flow_api.create_jet_chart_series(
 ,p_name=>'User by Page'
 ,p_data_source_type=>'SQL'
 ,p_data_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
-'SELECT COUNT(*) AS counter,',
+'SELECT CASE',
+'         WHEN nvl(:p1_show_percentage,',
+'                  ''N'') = ''Y'' THEN',
+'          round(100 * ratio_to_report(COUNT(*)) over(),',
+'                2)',
+'         ELSE',
+'          COUNT(*)',
+'       END AS counter,',
 '       iv_analytics_data.display_val',
 '  FROM (SELECT nvl(apex_app_pages.page_title,',
 '                   analytics_data.apex_page_id) AS display_val',
@@ -19975,7 +20024,7 @@ wwv_flow_api.create_jet_chart_series(
 '                                            SYSDATE)) iv_analytics_data',
 ' GROUP BY iv_analytics_data.display_val',
 ' ORDER BY 1 DESC'))
-,p_ajax_items_to_submit=>'P1_APP_ID,P1_DATE_FROM,P1_DATE_TO,P1_ANALYTICS_ID'
+,p_ajax_items_to_submit=>'P1_APP_ID,P1_DATE_FROM,P1_DATE_TO,P1_ANALYTICS_ID,P1_SHOW_PERCENTAGE'
 ,p_items_value_column_name=>'COUNTER'
 ,p_items_label_column_name=>'DISPLAY_VAL'
 ,p_color=>'#0572CE'
@@ -20049,7 +20098,14 @@ wwv_flow_api.create_jet_chart_series(
 ,p_name=>'User by JavaScript Event'
 ,p_data_source_type=>'SQL'
 ,p_data_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
-'SELECT COUNT(*) AS counter,',
+'SELECT CASE',
+'         WHEN nvl(:p1_show_percentage,',
+'                  ''N'') = ''Y'' THEN',
+'          round(100 * ratio_to_report(COUNT(*)) over(),',
+'                2)',
+'         ELSE',
+'          COUNT(*)',
+'       END AS counter,',
 '       analytics_data.apex_event_name',
 '  FROM analytics_data',
 ' WHERE analytics_data.analytics_id = nvl(:p1_analytics_id,',
@@ -20063,7 +20119,7 @@ wwv_flow_api.create_jet_chart_series(
 '                   ''DD-MON-YYYY''),',
 '           SYSDATE)',
 ' GROUP BY analytics_data.apex_event_name'))
-,p_ajax_items_to_submit=>'P1_DATE_FROM,P1_DATE_TO,P1_APP_ID,P1_ANALYTICS_ID'
+,p_ajax_items_to_submit=>'P1_DATE_FROM,P1_DATE_TO,P1_APP_ID,P1_ANALYTICS_ID,P1_SHOW_PERCENTAGE'
 ,p_items_value_column_name=>'COUNTER'
 ,p_items_label_column_name=>'APEX_EVENT_NAME'
 ,p_items_label_rendered=>false
@@ -20140,6 +20196,9 @@ wwv_flow_api.create_jet_chart_series(
 ,p_assigned_to_y2=>'off'
 ,p_items_label_rendered=>false
 );
+end;
+/
+begin
 wwv_flow_api.create_jet_chart_axis(
  p_id=>wwv_flow_api.id(1815192478496718)
 ,p_chart_id=>wwv_flow_api.id(1814984292496716)
@@ -20167,9 +20226,6 @@ wwv_flow_api.create_jet_chart_axis(
 ,p_minor_tick_rendered=>'off'
 ,p_tick_label_rendered=>'on'
 );
-end;
-/
-begin
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(1815575405496722)
 ,p_plug_name=>'Filter'
@@ -20237,7 +20293,14 @@ wwv_flow_api.create_jet_chart_series(
 ,p_name=>'Actions by User'
 ,p_data_source_type=>'SQL'
 ,p_data_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
-'SELECT COUNT(*) AS counter,',
+'SELECT CASE',
+'         WHEN nvl(:p1_show_percentage,',
+'                  ''N'') = ''Y'' THEN',
+'          round(100 * ratio_to_report(COUNT(*)) over(),',
+'                2)',
+'         ELSE',
+'          COUNT(*)',
+'       END AS counter,',
 '       analytics_data.analytics_id',
 '  FROM analytics_data',
 ' WHERE analytics_data.analytics_id = nvl(:p1_analytics_id,',
@@ -20252,7 +20315,7 @@ wwv_flow_api.create_jet_chart_series(
 '           SYSDATE)',
 ' GROUP BY analytics_data.analytics_id',
 ' ORDER BY 1 DESC'))
-,p_ajax_items_to_submit=>'P1_APP_ID,P1_DATE_FROM,P1_DATE_TO,P1_ANALYTICS_ID'
+,p_ajax_items_to_submit=>'P1_APP_ID,P1_DATE_FROM,P1_DATE_TO,P1_ANALYTICS_ID,P1_SHOW_PERCENTAGE'
 ,p_items_value_column_name=>'COUNTER'
 ,p_items_label_column_name=>'ANALYTICS_ID'
 ,p_color=>'#0572CE'
@@ -20331,7 +20394,14 @@ wwv_flow_api.create_jet_chart_series(
 ,p_data_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
 'SELECT iv2_analytics_data.counter,',
 '       iv2_analytics_data.date_created',
-'  FROM (SELECT COUNT(*) AS counter,',
+'  FROM (SELECT CASE',
+'                 WHEN nvl(:p1_show_percentage,',
+'                          ''N'') = ''Y'' THEN',
+'                  round(100 * ratio_to_report(COUNT(*)) over(),',
+'                        2)',
+'                 ELSE',
+'                  COUNT(*)',
+'               END AS counter,',
 '               iv_analytics_data.date_created',
 '          FROM (SELECT to_char(analytics_data.date_created,',
 '                               nvl(:p1_date_actions_period,',
@@ -20356,7 +20426,7 @@ wwv_flow_api.create_jet_chart_series(
 '                     ''TOP''),',
 '                 ''TOP'',',
 '                 iv2_analytics_data.counter) DESC'))
-,p_ajax_items_to_submit=>'P1_APP_ID,P1_DATE_FROM,P1_DATE_TO,P1_ANALYTICS_ID,P1_DATE_ACTIONS_SORT_BY,P1_DATE_ACTIONS_PERIOD'
+,p_ajax_items_to_submit=>'P1_APP_ID,P1_DATE_FROM,P1_DATE_TO,P1_ANALYTICS_ID,P1_DATE_ACTIONS_SORT_BY,P1_DATE_ACTIONS_PERIOD,P1_SHOW_PERCENTAGE'
 ,p_items_value_column_name=>'COUNTER'
 ,p_items_label_column_name=>'DATE_CREATED'
 ,p_color=>'#0572CE'
@@ -20442,7 +20512,14 @@ wwv_flow_api.create_jet_chart_series(
 ,p_name=>'User by Continent'
 ,p_data_source_type=>'SQL'
 ,p_data_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
-'SELECT COUNT(*) AS counter,',
+'SELECT CASE',
+'         WHEN nvl(:p1_show_percentage,',
+'                  ''N'') = ''Y'' THEN',
+'          round(100 * ratio_to_report(COUNT(*)) over(),',
+'                2)',
+'         ELSE',
+'          COUNT(*)',
+'       END AS counter,',
 '       nvl(analytics_data_geolocation.continent_name,',
 '           ''Unknown'') AS continent_name',
 '  FROM analytics_data,',
@@ -20459,7 +20536,7 @@ wwv_flow_api.create_jet_chart_series(
 '                   ''DD-MON-YYYY''),',
 '           SYSDATE)',
 ' GROUP BY analytics_data_geolocation.continent_name'))
-,p_ajax_items_to_submit=>'P1_DATE_FROM,P1_DATE_TO,P1_APP_ID,P1_ANALYTICS_ID'
+,p_ajax_items_to_submit=>'P1_DATE_FROM,P1_DATE_TO,P1_APP_ID,P1_ANALYTICS_ID,P1_SHOW_PERCENTAGE'
 ,p_items_value_column_name=>'COUNTER'
 ,p_items_label_column_name=>'CONTINENT_NAME'
 ,p_items_label_rendered=>false
@@ -20508,7 +20585,14 @@ wwv_flow_api.create_jet_chart_series(
 ,p_name=>'User by Country'
 ,p_data_source_type=>'SQL'
 ,p_data_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
-'SELECT COUNT(*) AS counter,',
+'SELECT CASE',
+'         WHEN nvl(:p1_show_percentage,',
+'                  ''N'') = ''Y'' THEN',
+'          round(100 * ratio_to_report(COUNT(*)) over(),',
+'                2)',
+'         ELSE',
+'          COUNT(*)',
+'       END AS counter,',
 '       nvl(analytics_data_geolocation.country_name,',
 '           ''Unknown'') AS country_name',
 '  FROM analytics_data,',
@@ -20525,7 +20609,7 @@ wwv_flow_api.create_jet_chart_series(
 '                   ''DD-MON-YYYY''),',
 '           SYSDATE)',
 ' GROUP BY analytics_data_geolocation.country_name'))
-,p_ajax_items_to_submit=>'P1_DATE_FROM,P1_DATE_TO,P1_APP_ID,P1_ANALYTICS_ID'
+,p_ajax_items_to_submit=>'P1_DATE_FROM,P1_DATE_TO,P1_APP_ID,P1_ANALYTICS_ID,P1_SHOW_PERCENTAGE'
 ,p_items_value_column_name=>'COUNTER'
 ,p_items_label_column_name=>'COUNTRY_NAME'
 ,p_color=>'#0572CE'
@@ -20577,7 +20661,7 @@ wwv_flow_api.create_page_button(
 wwv_flow_api.create_page_item(
  p_id=>wwv_flow_api.id(1760710609311144)
 ,p_name=>'P1_APP_ID'
-,p_item_sequence=>30
+,p_item_sequence=>40
 ,p_item_plug_id=>wwv_flow_api.id(1815575405496722)
 ,p_prompt=>'Application'
 ,p_display_as=>'PLUGIN_BE.CTB.SELECT2'
@@ -20660,7 +20744,7 @@ wwv_flow_api.create_page_item(
 wwv_flow_api.create_page_item(
  p_id=>wwv_flow_api.id(2077053100997024)
 ,p_name=>'P1_ENABLE_STICKY_REGION'
-,p_item_sequence=>50
+,p_item_sequence=>70
 ,p_item_plug_id=>wwv_flow_api.id(1815575405496722)
 ,p_item_default=>'N'
 ,p_prompt=>'Enable Sticky Filter'
@@ -20672,7 +20756,7 @@ wwv_flow_api.create_page_item(
 wwv_flow_api.create_page_item(
  p_id=>wwv_flow_api.id(2078745316997041)
 ,p_name=>'P1_ANALYTICS_ID'
-,p_item_sequence=>40
+,p_item_sequence=>50
 ,p_item_plug_id=>wwv_flow_api.id(1815575405496722)
 ,p_prompt=>'Analytics ID (Unique User)'
 ,p_display_as=>'PLUGIN_BE.CTB.SELECT2'
@@ -20726,12 +20810,25 @@ wwv_flow_api.create_page_item(
 ,p_attribute_01=>'3'
 ,p_attribute_02=>'NONE'
 );
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(2847660969426422)
+,p_name=>'P1_SHOW_PERCENTAGE'
+,p_item_sequence=>80
+,p_item_plug_id=>wwv_flow_api.id(1815575405496722)
+,p_item_default=>'N'
+,p_prompt=>'Show Percentage Values'
+,p_display_as=>'NATIVE_YES_NO'
+,p_begin_on_new_line=>'N'
+,p_field_template=>wwv_flow_api.id(1693460990507690)
+,p_item_template_options=>'#DEFAULT#'
+,p_attribute_01=>'APPLICATION'
+);
 wwv_flow_api.create_page_da_event(
  p_id=>wwv_flow_api.id(1815828544496725)
 ,p_name=>'RefreshAfterFilter'
 ,p_event_sequence=>20
 ,p_triggering_element_type=>'ITEM'
-,p_triggering_element=>'P1_DATE_TO,P1_DATE_FROM,P1_APP_ID,P1_ANALYTICS_ID'
+,p_triggering_element=>'P1_DATE_TO,P1_DATE_FROM,P1_APP_ID,P1_ANALYTICS_ID,P1_SHOW_PERCENTAGE'
 ,p_bind_type=>'bind'
 ,p_bind_event_type=>'change'
 );
@@ -20889,10 +20986,25 @@ wwv_flow_api.create_page_da_action(
 ,p_wait_for_result=>'Y'
 );
 wwv_flow_api.create_page_da_action(
- p_id=>wwv_flow_api.id(2159061445544808)
+ p_id=>wwv_flow_api.id(2847731099426423)
 ,p_event_id=>wwv_flow_api.id(1817073651496737)
 ,p_event_result=>'TRUE'
 ,p_action_sequence=>20
+,p_execute_on_page_init=>'Y'
+,p_action=>'NATIVE_SET_VALUE'
+,p_affected_elements_type=>'ITEM'
+,p_affected_elements=>'P1_SHOW_PERCENTAGE'
+,p_attribute_01=>'STATIC_ASSIGNMENT'
+,p_attribute_02=>'N'
+,p_attribute_09=>'N'
+,p_stop_execution_on_error=>'Y'
+,p_wait_for_result=>'Y'
+);
+wwv_flow_api.create_page_da_action(
+ p_id=>wwv_flow_api.id(2159061445544808)
+,p_event_id=>wwv_flow_api.id(1817073651496737)
+,p_event_result=>'TRUE'
+,p_action_sequence=>30
 ,p_execute_on_page_init=>'N'
 ,p_action=>'NATIVE_JAVASCRIPT_CODE'
 ,p_attribute_01=>wwv_flow_string.join(wwv_flow_t_varchar2(
