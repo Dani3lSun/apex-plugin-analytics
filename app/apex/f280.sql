@@ -27,7 +27,7 @@ prompt APPLICATION 280 - APEX Analytics
 -- Application Export:
 --   Application:     280
 --   Name:            APEX Analytics
---   Date and Time:   13:21 Friday December 28, 2018
+--   Date and Time:   13:46 Friday December 28, 2018
 --   Exported By:     DHOCHLEITNER
 --   Flashback:       0
 --   Export Type:     Application Export
@@ -119,7 +119,7 @@ wwv_flow_api.create_flow(
 ,p_substitution_string_01=>'APP_NAME'
 ,p_substitution_value_01=>'APEX Analytics'
 ,p_last_updated_by=>'DHOCHLEITNER'
-,p_last_upd_yyyymmddhh24miss=>'20181228132126'
+,p_last_upd_yyyymmddhh24miss=>'20181228134616'
 ,p_file_prefix => nvl(wwv_flow_application_install.get_static_app_file_prefix,'')
 ,p_files_version=>6
 ,p_ui_type_name => null
@@ -26824,7 +26824,7 @@ wwv_flow_api.create_page(
 'By selecting one of the available settings, administrators can potentially change how the application is displayed and/or features available to the end users.</p>',
 '<p>Access to this page should be limited to Administrators only.</p>'))
 ,p_last_updated_by=>'DHOCHLEITNER'
-,p_last_upd_yyyymmddhh24miss=>'20181227233045'
+,p_last_upd_yyyymmddhh24miss=>'20181228134356'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(2657148619335524)
@@ -26853,14 +26853,22 @@ wwv_flow_api.create_page_plug(
 '       utcs.last_analyzed,',
 '       ''Column'' AS stat_type',
 '  FROM user_tab_col_statistics utcs',
-' WHERE utcs.table_name != ''APEX$TEAM_DEV_FILES''',
+' WHERE utcs.table_name IN (''ANALYTICS_DATA'',',
+'                           ''ANALYTICS_DATA_GEOLOCATION'',',
+'                           ''APEX_APPS'',',
+'                           ''APEX_APP_PAGES'',',
+'                           ''CUSTOM_ANALYTIC_QUERIES'')',
 'UNION ALL',
 'SELECT uis.table_name,',
 '       uis.index_name,',
 '       uis.last_analyzed,',
 '       ''Index'' AS stat_type',
 '  FROM user_ind_statistics uis',
-' WHERE uis.table_name != ''APEX$TEAM_DEV_FILES'''))
+' WHERE uis.table_name IN (''ANALYTICS_DATA'',',
+'                          ''ANALYTICS_DATA_GEOLOCATION'',',
+'                          ''APEX_APPS'',',
+'                          ''APEX_APP_PAGES'',',
+'                          ''CUSTOM_ANALYTIC_QUERIES'')'))
 ,p_plug_source_type=>'NATIVE_IR'
 ,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
 ,p_prn_content_disposition=>'ATTACHMENT'
