@@ -738,6 +738,13 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
               6) != 'SELECT' THEN
       RETURN FALSE;
     END IF;
+    -- Check if query contains DML keywords
+    IF upper(p_query) LIKE '%INSERT%'
+       OR upper(p_query) LIKE '%UPDATE%'
+       OR upper(p_query) LIKE '%DELETE%'
+       OR upper(p_query) LIKE '%MERGE%' THEN
+      RETURN FALSE;
+    END IF;
     -- Check SQL query
     BEGIN
       EXECUTE IMMEDIATE 'alter session set cursor_sharing=force';
