@@ -468,6 +468,45 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
     --
   END get_app_settings_value;
   --
+  -- Ckeck if error object is returned by REST API from ipstack (throw exception)
+  -- #param p_response_clob
+  PROCEDURE check_error_ipstack_call(p_response_clob IN CLOB) IS
+    --
+    l_exception_message VARCHAR2(4000);
+    l_response_xml      xmltype;
+    -- cursor xmltable on json for error object
+    CURSOR l_cur_error IS
+      SELECT to_number(err_code) AS err_code,
+             err_type,
+             err_info
+        FROM xmltable('/json/error' passing l_response_xml columns err_code path 'code',
+                      err_type path 'type',
+                      err_info path 'info');
+    --
+    l_rec_error l_cur_error%ROWTYPE;
+    --
+  BEGIN
+    -- check response clob for error and code/type string
+    IF p_response_clob LIKE '%error%'
+       AND p_response_clob LIKE '%code%'
+       AND p_response_clob LIKE '%type%' THEN
+      -- json to xml
+      l_response_xml := apex_json.to_xmltype(p_response_clob);
+      -- open xml cursor
+      OPEN l_cur_error;
+      FETCH l_cur_error
+        INTO l_rec_error;
+      CLOSE l_cur_error;
+      -- Throw error
+      IF l_rec_error.err_code IS NOT NULL THEN
+        l_exception_message := 'Error-Code: ' || l_rec_error.err_code || chr(10) || 'Error-Type: ' ||
+                               l_rec_error.err_type || chr(10) || 'Error-Info: ' || l_rec_error.err_info;
+        raise_application_error(-20004,
+                                l_exception_message);
+      END IF;
+    END IF;
+  END check_error_ipstack_call;
+  --
   -- Get geolocation of IP address using REST API from ipstack
   -- #param p_base_url
   -- #param p_ip_address
@@ -529,6 +568,8 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
                                                             p_parm_value  => apex_util.string_to_table(p_api_key ||
                                                                                                        ':continent_code,continent_name,country_code,country_name'));
     END IF;
+    -- check for ipstack REST API error
+    apexanalytics_app_pkg.check_error_ipstack_call(p_response_clob => l_response_json);
     -- json to xml
     l_response_xml := apex_json.to_xmltype(l_response_json);
     -- get values and pass out
@@ -723,7 +764,8 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
   FUNCTION is_table_access_allowed(p_query          IN CLOB,
                                    p_allowed_tables IN VARCHAR2) RETURN BOOLEAN IS
     --
-    l_return BOOLEAN := FALSE;
+    l_is_query_valid BOOLEAN := FALSE;
+    l_return         BOOLEAN := FALSE;
     --
     CURSOR l_cur_xplan_tables IS
       SELECT iv_xplan_tables.table_name,
@@ -753,23 +795,28 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
     l_rec_xplan_tables l_cur_xplan_tables%ROWTYPE;
     --
   BEGIN
-    -- generate explain plan for query
-    EXECUTE IMMEDIATE 'explain plan for ' || p_query;
-    -- check if table names or index names referencing to tables are used in plan_table
-    OPEN l_cur_xplan_tables;
-    FETCH l_cur_xplan_tables
-      INTO l_rec_xplan_tables;
+    -- check if query is valid
+    l_is_query_valid := apexanalytics_app_pkg.is_query_valid(p_query => p_query);
     --
-    IF l_cur_xplan_tables%FOUND THEN
+    IF l_is_query_valid THEN
+      -- generate explain plan for query
+      EXECUTE IMMEDIATE 'explain plan for ' || p_query;
+      -- check if table names or index names referencing to tables are used in plan_table
+      OPEN l_cur_xplan_tables;
+      FETCH l_cur_xplan_tables
+        INTO l_rec_xplan_tables;
       --
-      DELETE plan_table
-       WHERE plan_id = l_rec_xplan_tables.plan_id;
-      --
-      l_return := TRUE;
-    ELSE
-      l_return := FALSE;
+      IF l_cur_xplan_tables%FOUND THEN
+        --
+        DELETE plan_table
+         WHERE plan_id = l_rec_xplan_tables.plan_id;
+        --
+        l_return := TRUE;
+      ELSE
+        l_return := FALSE;
+      END IF;
+      CLOSE l_cur_xplan_tables;
     END IF;
-    CLOSE l_cur_xplan_tables;
     --
     RETURN l_return;
     --
@@ -822,6 +869,34 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
       --
       RAISE;
   END get_query_columns;
+  --
+  -- Check if custom query exceeds max allowed columns (default: 20)
+  -- #param p_query
+  -- #param p_max_allowed_columns
+  -- #return BOOLEAN
+  FUNCTION is_column_count_allowed(p_query               IN CLOB,
+                                   p_max_allowed_columns IN NUMBER := 20) RETURN BOOLEAN IS
+    --
+    l_column_string VARCHAR2(4000);
+    l_columns       apex_t_varchar2;
+    l_return        BOOLEAN := FALSE;
+    --
+  BEGIN
+    -- get columns comma separated
+    l_column_string := apexanalytics_app_pkg.get_query_columns(p_query => p_query);
+    l_columns       := apex_string.split(p_str => l_column_string,
+                                         p_sep => ',');
+    --
+    IF l_columns.count <= nvl(p_max_allowed_columns,
+                              20) THEN
+      l_return := TRUE;
+    ELSE
+      l_return := FALSE;
+    END IF;
+    --
+    RETURN l_return;
+    --
+  END is_column_count_allowed;
   --
   -- Create APEX collection from custom query from CUSTOM_ANALYTIC_QUERIES table
   -- #param p_id

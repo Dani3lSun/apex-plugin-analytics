@@ -27,7 +27,7 @@ prompt APPLICATION 280 - APEX Analytics
 -- Application Export:
 --   Application:     280
 --   Name:            APEX Analytics
---   Date and Time:   21:59 Thursday December 27, 2018
+--   Date and Time:   13:21 Friday December 28, 2018
 --   Exported By:     DHOCHLEITNER
 --   Flashback:       0
 --   Export Type:     Application Export
@@ -36,13 +36,13 @@ prompt APPLICATION 280 - APEX Analytics
 --
 
 -- Application Statistics:
---   Pages:                     19
+--   Pages:                     20
 --     Items:                   75
---     Validations:              6
+--     Validations:              7
 --     Processes:               22
---     Regions:                 68
---     Buttons:                 34
---     Dynamic Actions:         25
+--     Regions:                 70
+--     Buttons:                 36
+--     Dynamic Actions:         26
 --   Shared Components:
 --     Logic:
 --       App Settings:           6
@@ -119,7 +119,7 @@ wwv_flow_api.create_flow(
 ,p_substitution_string_01=>'APP_NAME'
 ,p_substitution_value_01=>'APEX Analytics'
 ,p_last_updated_by=>'DHOCHLEITNER'
-,p_last_upd_yyyymmddhh24miss=>'20181227215900'
+,p_last_upd_yyyymmddhh24miss=>'20181228132126'
 ,p_file_prefix => nvl(wwv_flow_application_install.get_static_app_file_prefix,'')
 ,p_files_version=>6
 ,p_ui_type_name => null
@@ -26824,7 +26824,7 @@ wwv_flow_api.create_page(
 'By selecting one of the available settings, administrators can potentially change how the application is displayed and/or features available to the end users.</p>',
 '<p>Access to this page should be limited to Administrators only.</p>'))
 ,p_last_updated_by=>'DHOCHLEITNER'
-,p_last_upd_yyyymmddhh24miss=>'20181227172222'
+,p_last_upd_yyyymmddhh24miss=>'20181227233045'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(2657148619335524)
@@ -27431,7 +27431,7 @@ wwv_flow_api.create_page(
 ,p_page_template_options=>'#DEFAULT#'
 ,p_protection_level=>'C'
 ,p_last_updated_by=>'DHOCHLEITNER'
-,p_last_upd_yyyymmddhh24miss=>'20181227204206'
+,p_last_upd_yyyymmddhh24miss=>'20181228131725'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(2658865863335541)
@@ -27499,6 +27499,20 @@ wwv_flow_api.create_page_button(
 ,p_warn_on_unsaved_changes=>null
 ,p_icon_css_classes=>'fa-close'
 );
+wwv_flow_api.create_page_button(
+ p_id=>wwv_flow_api.id(2847545095426421)
+,p_button_sequence=>40
+,p_button_plug_id=>wwv_flow_api.id(2658990229335542)
+,p_button_name=>'SHOW_ALLOWED_TABLES'
+,p_button_action=>'REDIRECT_PAGE'
+,p_button_template_options=>'#DEFAULT#:t-Button--iconLeft'
+,p_button_template_id=>wwv_flow_api.id(1694020984507690)
+,p_button_is_hot=>'Y'
+,p_button_image_alt=>'Show Allowed Tables'
+,p_button_position=>'REGION_TEMPLATE_PREVIOUS'
+,p_button_redirect_url=>'f?p=&APP_ID.:18:&SESSION.::&DEBUG.:RP::'
+,p_icon_css_classes=>'fa-table-check'
+);
 wwv_flow_api.create_page_item(
  p_id=>wwv_flow_api.id(2659221707335545)
 ,p_name=>'P16_CUSTOM_QUERY'
@@ -27562,6 +27576,25 @@ wwv_flow_api.create_page_validation(
 'END;'))
 ,p_validation_type=>'FUNC_BODY_RETURNING_BOOLEAN'
 ,p_error_message=>'#LABEL# is not allowed to access selected tables. Only these tables are safe to use: ANALYTICS_DATA, ANALYTICS_DATA_GEOLOCATION, APEX_APPS, APEX_APP_PAGES'
+,p_validation_condition=>'apex_application.g_inline_validation_error_cnt = 0'
+,p_validation_condition_type=>'PLSQL_EXPRESSION'
+,p_when_button_pressed=>wwv_flow_api.id(2659132872335544)
+,p_associated_item=>wwv_flow_api.id(2659221707335545)
+,p_error_display_location=>'INLINE_IN_NOTIFICATION'
+);
+wwv_flow_api.create_page_validation(
+ p_id=>wwv_flow_api.id(2846951073426415)
+,p_validation_name=>'IS_COLUMN_COUNT_VALID'
+,p_validation_sequence=>30
+,p_validation=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'BEGIN',
+'  RETURN apexanalytics_app_pkg.is_column_count_allowed(p_query               => :p16_custom_query,',
+'                                                       p_max_allowed_columns => 20);',
+'END;'))
+,p_validation_type=>'FUNC_BODY_RETURNING_BOOLEAN'
+,p_error_message=>'#LABEL# is not allowed to select more than 20 columns'
+,p_validation_condition=>'apex_application.g_inline_validation_error_cnt = 0'
+,p_validation_condition_type=>'PLSQL_EXPRESSION'
 ,p_when_button_pressed=>wwv_flow_api.id(2659132872335544)
 ,p_associated_item=>wwv_flow_api.id(2659221707335545)
 ,p_error_display_location=>'INLINE_IN_NOTIFICATION'
@@ -27692,11 +27725,11 @@ wwv_flow_api.create_page(
 ,p_page_template_options=>'#DEFAULT#'
 ,p_protection_level=>'C'
 ,p_last_updated_by=>'DHOCHLEITNER'
-,p_last_upd_yyyymmddhh24miss=>'20181227215509'
+,p_last_upd_yyyymmddhh24miss=>'20181228115922'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(5608137585359030)
-,p_plug_name=>'Query Result: &P17_QUERY_NAME.'
+,p_plug_name=>'<strong>Query Result:</strong> &P17_QUERY_NAME.'
 ,p_region_template_options=>'#DEFAULT#:t-Region--noUI:t-Region--hiddenOverflow'
 ,p_component_template_options=>'#DEFAULT#'
 ,p_plug_template=>wwv_flow_api.id(1641671421507671)
@@ -28260,6 +28293,184 @@ wwv_flow_api.create_page_process(
 ,p_error_display_location=>'INLINE_IN_NOTIFICATION'
 ,p_process_when=>'P17_ID'
 ,p_process_when_type=>'ITEM_IS_NOT_NULL'
+);
+end;
+/
+prompt --application/pages/page_00018
+begin
+wwv_flow_api.create_page(
+ p_id=>18
+,p_user_interface_id=>wwv_flow_api.id(1715903664507699)
+,p_name=>'Custom Analytic Query - Allowed Tables'
+,p_page_mode=>'MODAL'
+,p_step_title=>'Custom Analytic Query - Allowed Tables'
+,p_step_sub_title=>'Custom Analytic Query - Allowed Tables'
+,p_step_sub_title_type=>'TEXT_WITH_SUBSTITUTIONS'
+,p_autocomplete_on_off=>'OFF'
+,p_page_template_options=>'#DEFAULT#'
+,p_dialog_height=>'700'
+,p_dialog_width=>'800'
+,p_dialog_chained=>'N'
+,p_protection_level=>'C'
+,p_last_updated_by=>'DHOCHLEITNER'
+,p_last_upd_yyyymmddhh24miss=>'20181228131958'
+);
+wwv_flow_api.create_page_plug(
+ p_id=>wwv_flow_api.id(2847049019426416)
+,p_plug_name=>'Allowed Tables'
+,p_region_template_options=>'#DEFAULT#'
+,p_component_template_options=>'#DEFAULT#'
+,p_plug_template=>wwv_flow_api.id(1640550884507670)
+,p_plug_display_sequence=>10
+,p_include_in_reg_disp_sel_yn=>'Y'
+,p_plug_display_point=>'BODY'
+,p_query_type=>'SQL'
+,p_plug_source=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'SELECT user_tab_columns.table_name,',
+'       user_tab_columns.column_name,',
+'       user_tab_columns.data_type',
+'  FROM user_tab_columns',
+' WHERE user_tab_columns.table_name IN (''ANALYTICS_DATA'',',
+'                                       ''ANALYTICS_DATA_GEOLOCATION'',',
+'                                       ''APEX_APPS'',',
+'                                       ''APEX_APP_PAGES'')'))
+,p_plug_source_type=>'NATIVE_IR'
+,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
+,p_prn_content_disposition=>'ATTACHMENT'
+,p_prn_document_header=>'APEX'
+,p_prn_units=>'INCHES'
+,p_prn_paper_size=>'LETTER'
+,p_prn_width=>8.5
+,p_prn_height=>11
+,p_prn_orientation=>'HORIZONTAL'
+,p_prn_page_header_font_color=>'#000000'
+,p_prn_page_header_font_family=>'Helvetica'
+,p_prn_page_header_font_weight=>'normal'
+,p_prn_page_header_font_size=>'12'
+,p_prn_page_footer_font_color=>'#000000'
+,p_prn_page_footer_font_family=>'Helvetica'
+,p_prn_page_footer_font_weight=>'normal'
+,p_prn_page_footer_font_size=>'12'
+,p_prn_header_bg_color=>'#9bafde'
+,p_prn_header_font_color=>'#000000'
+,p_prn_header_font_family=>'Helvetica'
+,p_prn_header_font_weight=>'normal'
+,p_prn_header_font_size=>'10'
+,p_prn_body_bg_color=>'#efefef'
+,p_prn_body_font_color=>'#000000'
+,p_prn_body_font_family=>'Helvetica'
+,p_prn_body_font_weight=>'normal'
+,p_prn_body_font_size=>'10'
+,p_prn_border_width=>.5
+,p_prn_page_header_alignment=>'CENTER'
+,p_prn_page_footer_alignment=>'CENTER'
+);
+wwv_flow_api.create_worksheet(
+ p_id=>wwv_flow_api.id(2847178851426417)
+,p_max_row_count=>'1000000'
+,p_show_nulls_as=>'-'
+,p_pagination_type=>'ROWS_X_TO_Y'
+,p_pagination_display_pos=>'BOTTOM_RIGHT'
+,p_report_list_mode=>'TABS'
+,p_show_detail_link=>'N'
+,p_show_notify=>'Y'
+,p_download_formats=>'CSV:HTML:EMAIL:XLS:PDF:RTF'
+,p_owner=>'DHOCHLEITNER'
+,p_internal_uid=>2847178851426417
+);
+wwv_flow_api.create_worksheet_column(
+ p_id=>wwv_flow_api.id(2847204677426418)
+,p_db_column_name=>'TABLE_NAME'
+,p_display_order=>10
+,p_column_identifier=>'A'
+,p_column_label=>'Table Name'
+,p_column_type=>'STRING'
+,p_heading_alignment=>'LEFT'
+);
+wwv_flow_api.create_worksheet_column(
+ p_id=>wwv_flow_api.id(2847384690426419)
+,p_db_column_name=>'COLUMN_NAME'
+,p_display_order=>20
+,p_column_identifier=>'B'
+,p_column_label=>'Column Name'
+,p_column_type=>'STRING'
+,p_heading_alignment=>'LEFT'
+);
+wwv_flow_api.create_worksheet_column(
+ p_id=>wwv_flow_api.id(2847455592426420)
+,p_db_column_name=>'DATA_TYPE'
+,p_display_order=>30
+,p_column_identifier=>'C'
+,p_column_label=>'Data Type'
+,p_column_type=>'STRING'
+,p_heading_alignment=>'LEFT'
+);
+wwv_flow_api.create_worksheet_rpt(
+ p_id=>wwv_flow_api.id(2890093034061979)
+,p_application_user=>'APXWS_DEFAULT'
+,p_report_seq=>10
+,p_report_alias=>'28901'
+,p_status=>'PUBLIC'
+,p_is_default=>'Y'
+,p_report_columns=>'TABLE_NAME:COLUMN_NAME:DATA_TYPE'
+,p_sort_column_1=>'TABLE_NAME'
+,p_sort_direction_1=>'ASC'
+,p_sort_column_2=>'0'
+,p_sort_direction_2=>'ASC'
+,p_sort_column_3=>'0'
+,p_sort_direction_3=>'ASC'
+,p_sort_column_4=>'0'
+,p_sort_direction_4=>'ASC'
+,p_sort_column_5=>'0'
+,p_sort_direction_5=>'ASC'
+,p_sort_column_6=>'0'
+,p_sort_direction_6=>'ASC'
+,p_break_on=>'TABLE_NAME'
+,p_break_enabled_on=>'TABLE_NAME'
+);
+wwv_flow_api.create_page_plug(
+ p_id=>wwv_flow_api.id(5532632963378336)
+,p_plug_name=>'Button Container'
+,p_region_template_options=>'#DEFAULT#'
+,p_plug_template=>wwv_flow_api.id(1621130405507664)
+,p_plug_display_sequence=>10
+,p_include_in_reg_disp_sel_yn=>'Y'
+,p_plug_display_point=>'REGION_POSITION_03'
+,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
+,p_attribute_01=>'N'
+,p_attribute_02=>'HTML'
+);
+wwv_flow_api.create_page_button(
+ p_id=>wwv_flow_api.id(2876136100042820)
+,p_button_sequence=>10
+,p_button_plug_id=>wwv_flow_api.id(5532632963378336)
+,p_button_name=>'CLOSE'
+,p_button_action=>'DEFINED_BY_DA'
+,p_button_template_options=>'#DEFAULT#:t-Button--iconLeft'
+,p_button_template_id=>wwv_flow_api.id(1694020984507690)
+,p_button_image_alt=>'Close'
+,p_button_position=>'REGION_TEMPLATE_NEXT'
+,p_button_execute_validations=>'N'
+,p_warn_on_unsaved_changes=>null
+,p_icon_css_classes=>'fa-close'
+);
+wwv_flow_api.create_page_da_event(
+ p_id=>wwv_flow_api.id(2879349908042834)
+,p_name=>'CancelDialog'
+,p_event_sequence=>10
+,p_triggering_element_type=>'BUTTON'
+,p_triggering_button_id=>wwv_flow_api.id(2876136100042820)
+,p_bind_type=>'bind'
+,p_bind_event_type=>'click'
+);
+wwv_flow_api.create_page_da_action(
+ p_id=>wwv_flow_api.id(2879801627042835)
+,p_event_id=>wwv_flow_api.id(2879349908042834)
+,p_event_result=>'TRUE'
+,p_action_sequence=>10
+,p_execute_on_page_init=>'N'
+,p_action=>'NATIVE_DIALOG_CANCEL'
+,p_stop_execution_on_error=>'Y'
 );
 end;
 /

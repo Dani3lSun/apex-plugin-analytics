@@ -120,6 +120,10 @@ CREATE OR REPLACE PACKAGE apexanalytics_app_pkg IS
   FUNCTION get_app_settings_value(p_app_id IN NUMBER,
                                   p_name   IN VARCHAR2) RETURN VARCHAR2;
   --
+  -- Ckeck if error object is returned by REST API from ipstack (throw exception)
+  -- #param p_response_clob
+  PROCEDURE check_error_ipstack_call(p_response_clob IN CLOB);
+  --
   -- Get geolocation of IP address using REST API from ipstack
   -- #param p_base_url
   -- #param p_ip_address
@@ -186,6 +190,13 @@ CREATE OR REPLACE PACKAGE apexanalytics_app_pkg IS
   -- #param p_query
   -- #return VARCHAR2
   FUNCTION get_query_columns(p_query IN CLOB) RETURN VARCHAR2;
+  --
+  -- Check if custom query exceeds max allowed columns (default: 20)
+  -- #param p_query
+  -- #param p_max_allowed_columns
+  -- #return BOOLEAN
+  FUNCTION is_column_count_allowed(p_query               IN CLOB,
+                                   p_max_allowed_columns IN NUMBER := 20) RETURN BOOLEAN;
   --
   -- Create APEX collection from custom query from CUSTOM_ANALYTIC_QUERIES table
   -- #param p_id
