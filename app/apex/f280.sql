@@ -27,7 +27,7 @@ prompt APPLICATION 280 - APEX Analytics
 -- Application Export:
 --   Application:     280
 --   Name:            APEX Analytics
---   Date and Time:   14:59 Friday December 28, 2018
+--   Date and Time:   15:11 Friday December 28, 2018
 --   Exported By:     DHOCHLEITNER
 --   Flashback:       0
 --   Export Type:     Application Export
@@ -119,7 +119,7 @@ wwv_flow_api.create_flow(
 ,p_substitution_string_01=>'APP_NAME'
 ,p_substitution_value_01=>'APEX Analytics'
 ,p_last_updated_by=>'DHOCHLEITNER'
-,p_last_upd_yyyymmddhh24miss=>'20181228145922'
+,p_last_upd_yyyymmddhh24miss=>'20181228151145'
 ,p_file_prefix => nvl(wwv_flow_application_install.get_static_app_file_prefix,'')
 ,p_files_version=>6
 ,p_ui_type_name => null
@@ -19298,7 +19298,7 @@ wwv_flow_api.create_page(
 ,p_page_template_options=>'#DEFAULT#'
 ,p_protection_level=>'C'
 ,p_last_updated_by=>'DHOCHLEITNER'
-,p_last_upd_yyyymmddhh24miss=>'20181228145607'
+,p_last_upd_yyyymmddhh24miss=>'20181228150914'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(1727386020507712)
@@ -19981,7 +19981,8 @@ wwv_flow_api.create_jet_chart(
 ,p_stack=>'off'
 ,p_sorting=>'label-asc'
 ,p_fill_multi_series_gaps=>true
-,p_zoom_and_scroll=>'off'
+,p_zoom_and_scroll=>'delayed'
+,p_initial_zooming=>'none'
 ,p_tooltip_rendered=>'Y'
 ,p_show_series_name=>true
 ,p_show_group_name=>true
@@ -19989,6 +19990,7 @@ wwv_flow_api.create_jet_chart(
 ,p_show_label=>true
 ,p_legend_rendered=>'on'
 ,p_legend_position=>'auto'
+,p_overview_rendered=>'on'
 );
 wwv_flow_api.create_jet_chart_series(
  p_id=>wwv_flow_api.id(1759533119311132)
@@ -20151,7 +20153,8 @@ wwv_flow_api.create_jet_chart(
 ,p_stack=>'off'
 ,p_sorting=>'label-asc'
 ,p_fill_multi_series_gaps=>true
-,p_zoom_and_scroll=>'off'
+,p_zoom_and_scroll=>'delayed'
+,p_initial_zooming=>'none'
 ,p_tooltip_rendered=>'Y'
 ,p_show_series_name=>true
 ,p_show_group_name=>true
@@ -20159,6 +20162,7 @@ wwv_flow_api.create_jet_chart(
 ,p_show_label=>true
 ,p_legend_rendered=>'on'
 ,p_legend_position=>'auto'
+,p_overview_rendered=>'on'
 );
 wwv_flow_api.create_jet_chart_series(
  p_id=>wwv_flow_api.id(1815019279496717)
@@ -20277,7 +20281,8 @@ wwv_flow_api.create_jet_chart(
 ,p_stack=>'off'
 ,p_sorting=>'label-asc'
 ,p_fill_multi_series_gaps=>true
-,p_zoom_and_scroll=>'off'
+,p_zoom_and_scroll=>'delayed'
+,p_initial_zooming=>'none'
 ,p_tooltip_rendered=>'Y'
 ,p_show_series_name=>true
 ,p_show_group_name=>true
@@ -20285,6 +20290,7 @@ wwv_flow_api.create_jet_chart(
 ,p_show_label=>true
 ,p_legend_rendered=>'on'
 ,p_legend_position=>'auto'
+,p_overview_rendered=>'on'
 );
 wwv_flow_api.create_jet_chart_series(
  p_id=>wwv_flow_api.id(2078154472997035)
@@ -20376,7 +20382,8 @@ wwv_flow_api.create_jet_chart(
 ,p_stack=>'off'
 ,p_sorting=>'label-asc'
 ,p_fill_multi_series_gaps=>true
-,p_zoom_and_scroll=>'off'
+,p_zoom_and_scroll=>'delayed'
+,p_initial_zooming=>'none'
 ,p_tooltip_rendered=>'Y'
 ,p_show_series_name=>true
 ,p_show_group_name=>true
@@ -20384,6 +20391,7 @@ wwv_flow_api.create_jet_chart(
 ,p_show_label=>true
 ,p_legend_rendered=>'on'
 ,p_legend_position=>'auto'
+,p_overview_rendered=>'on'
 );
 wwv_flow_api.create_jet_chart_series(
  p_id=>wwv_flow_api.id(2079227813997046)
