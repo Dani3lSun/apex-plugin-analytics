@@ -246,5 +246,12 @@ CREATE OR REPLACE PACKAGE apexanalytics_app_pkg IS
                                            p_col_header_19 OUT VARCHAR2,
                                            p_col_header_20 OUT VARCHAR2);
   --
+  -- Get real language name from browsers ISO language code
+  -- #param p_language_code
+  -- #param p_main_lang_only
+  -- #return VARCHAR2
+  FUNCTION get_language_name(p_language_code  IN VARCHAR2,
+                             p_main_lang_only IN VARCHAR2 := 'N') RETURN VARCHAR2;
+  --
 END apexanalytics_app_pkg;
 /

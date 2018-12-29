@@ -12,6 +12,13 @@ SPOOL install.log
 @@tables/apex_apps_table.sql
 @@tables/apex_app_pages_table.sql
 @@tables/custom_analytic_queries_table.sql
+@@tables/language_list_table.sql
+
+-- insert data
+@@data/insert_language_list_data.sql
+
+-- views
+@@views/analytics_data_all_v.sql
 
 -- create packages
 @@packages/apexanalytics_app_pkg.pks

@@ -1090,5 +1090,39 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
     --
   END get_custom_analytic_col_header;
   --
+  -- Get real language name from browsers ISO language code
+  -- #param p_language_code
+  -- #param p_main_lang_only
+  -- #return VARCHAR2
+  FUNCTION get_language_name(p_language_code  IN VARCHAR2,
+                             p_main_lang_only IN VARCHAR2 := 'N') RETURN VARCHAR2 IS
+    --
+    l_language_code VARCHAR2(20);
+    l_language_name VARCHAR2(100);
+    --
+    CURSOR l_cur_language IS
+      SELECT language_list.value
+        FROM language_list
+       WHERE language_list.id = l_language_code;
+    --
+  BEGIN
+    --
+    IF p_main_lang_only = 'Y' THEN
+      l_language_code := substr(lower(p_language_code),
+                                1,
+                                2);
+    ELSE
+      l_language_code := lower(p_language_code);
+    END IF;
+    --
+    OPEN l_cur_language;
+    FETCH l_cur_language
+      INTO l_language_name;
+    CLOSE l_cur_language;
+    --
+    RETURN l_language_name;
+    --
+  END get_language_name;
+  --
 END apexanalytics_app_pkg;
 /
