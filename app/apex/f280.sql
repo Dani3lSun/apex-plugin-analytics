@@ -27,7 +27,7 @@ prompt APPLICATION 280 - APEX Analytics
 -- Application Export:
 --   Application:     280
 --   Name:            APEX Analytics
---   Date and Time:   21:22 Saturday December 29, 2018
+--   Date and Time:   23:55 Saturday December 29, 2018
 --   Exported By:     DHOCHLEITNER
 --   Flashback:       0
 --   Export Type:     Application Export
@@ -119,7 +119,7 @@ wwv_flow_api.create_flow(
 ,p_substitution_string_01=>'APP_NAME'
 ,p_substitution_value_01=>'APEX Analytics'
 ,p_last_updated_by=>'DHOCHLEITNER'
-,p_last_upd_yyyymmddhh24miss=>'20181229212236'
+,p_last_upd_yyyymmddhh24miss=>'20181229235540'
 ,p_file_prefix => nvl(wwv_flow_application_install.get_static_app_file_prefix,'')
 ,p_files_version=>6
 ,p_ui_type_name => null
@@ -27193,7 +27193,7 @@ wwv_flow_api.create_page(
 'By selecting one of the available settings, administrators can potentially change how the application is displayed and/or features available to the end users.</p>',
 '<p>Access to this page should be limited to Administrators only.</p>'))
 ,p_last_updated_by=>'DHOCHLEITNER'
-,p_last_upd_yyyymmddhh24miss=>'20181228134356'
+,p_last_upd_yyyymmddhh24miss=>'20181229235447'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(2657148619335524)
@@ -27226,7 +27226,8 @@ wwv_flow_api.create_page_plug(
 '                           ''ANALYTICS_DATA_GEOLOCATION'',',
 '                           ''APEX_APPS'',',
 '                           ''APEX_APP_PAGES'',',
-'                           ''CUSTOM_ANALYTIC_QUERIES'')',
+'                           ''CUSTOM_ANALYTIC_QUERIES'',',
+'                           ''LANGUAGE_LIST'')',
 'UNION ALL',
 'SELECT uis.table_name,',
 '       uis.index_name,',
@@ -27237,7 +27238,8 @@ wwv_flow_api.create_page_plug(
 '                          ''ANALYTICS_DATA_GEOLOCATION'',',
 '                          ''APEX_APPS'',',
 '                          ''APEX_APP_PAGES'',',
-'                          ''CUSTOM_ANALYTIC_QUERIES'')'))
+'                          ''CUSTOM_ANALYTIC_QUERIES'',',
+'                          ''LANGUAGE_LIST'')'))
 ,p_plug_source_type=>'NATIVE_IR'
 ,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
 ,p_prn_content_disposition=>'ATTACHMENT'
@@ -27805,12 +27807,16 @@ wwv_flow_api.create_page(
 ,p_step_title=>'Create Custom Analytic Query'
 ,p_step_sub_title_type=>'TEXT_WITH_SUBSTITUTIONS'
 ,p_autocomplete_on_off=>'OFF'
+,p_inline_css=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'.t-Alert--page.t-Alert--warning .a-Notification-list {',
+'    max-height: 160px;',
+'}'))
 ,p_page_template_options=>'#DEFAULT#'
 ,p_dialog_height=>'650'
 ,p_dialog_width=>'750'
 ,p_protection_level=>'C'
 ,p_last_updated_by=>'DHOCHLEITNER'
-,p_last_upd_yyyymmddhh24miss=>'20181229211126'
+,p_last_upd_yyyymmddhh24miss=>'20181229235238'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(2658865863335541)
@@ -27951,7 +27957,7 @@ wwv_flow_api.create_page_validation(
 ,p_validation=>wwv_flow_string.join(wwv_flow_t_varchar2(
 'BEGIN',
 '  RETURN apexanalytics_app_pkg.is_table_access_allowed(p_query          => :p16_custom_query,',
-'                                                       p_allowed_tables => ''ANALYTICS_DATA,ANALYTICS_DATA_GEOLOCATION,APEX_APPS,APEX_APP_PAGES'');',
+'                                                       p_allowed_tables => ''ANALYTICS_DATA,ANALYTICS_DATA_GEOLOCATION,APEX_APPS,APEX_APP_PAGES,LANGUAGE_LIST'');',
 'END;'))
 ,p_validation_type=>'FUNC_BODY_RETURNING_BOOLEAN'
 ,p_error_message=>wwv_flow_string.join(wwv_flow_t_varchar2(
@@ -27959,6 +27965,7 @@ wwv_flow_api.create_page_validation(
 '- ANALYTICS_DATA<br>',
 '- ANALYTICS_DATA_GEOLOCATION<br>',
 '- APEX_APPS & APEX_APP_PAGES<br>',
+'- LANGUAGE_LIST<br>',
 '- ANALYTICS_DATA_ALL_V (View)'))
 ,p_validation_condition=>'apex_application.g_inline_validation_error_cnt = 0'
 ,p_validation_condition_type=>'PLSQL_EXPRESSION'
@@ -28697,7 +28704,7 @@ wwv_flow_api.create_page(
 ,p_dialog_chained=>'N'
 ,p_protection_level=>'C'
 ,p_last_updated_by=>'DHOCHLEITNER'
-,p_last_upd_yyyymmddhh24miss=>'20181229210738'
+,p_last_upd_yyyymmddhh24miss=>'20181229235337'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(2847049019426416)
@@ -28720,6 +28727,7 @@ wwv_flow_api.create_page_plug(
 '                                       ''ANALYTICS_DATA_GEOLOCATION'',',
 '                                       ''APEX_APPS'',',
 '                                       ''APEX_APP_PAGES'',',
+'                                       ''LANGUAGE_LIST'',',
 '                                       ''ANALYTICS_DATA_ALL_V'')'))
 ,p_plug_source_type=>'NATIVE_IR'
 ,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
