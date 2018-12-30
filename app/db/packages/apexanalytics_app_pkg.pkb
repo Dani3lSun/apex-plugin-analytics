@@ -124,7 +124,7 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
                       p_source => p_json_clob);
     EXCEPTION
       WHEN OTHERS THEN
-        raise_application_error(-20003,
+        raise_application_error(error_rest_json_parse,
                                 'JSON payload cannot be parsed.');
     END;
     --
@@ -138,7 +138,7 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
       IF l_encoded_string IS NOT NULL THEN
         l_decoded_string := base64_decode(p_base64_string => l_encoded_string);
       ELSE
-        raise_application_error(-20001,
+        raise_application_error(error_rest_missing_values,
                                 'Missing required values in JSON payload.');
       END IF;
       l_string_values := apex_string.split(p_str => l_decoded_string,
@@ -152,12 +152,12 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
       p_os_version        := l_string_values(6);
       p_has_touch_support := nvl(l_string_values(7),
                                  'N');
-      p_page_load_time    := nvl(l_string_values(8),
+      p_page_load_time    := nvl(to_number(l_string_values(8)),
                                  0);
-      p_screen_width      := l_string_values(9);
-      p_screen_height     := l_string_values(10);
-      p_apex_app_id       := l_string_values(11);
-      p_apex_page_id      := l_string_values(12);
+      p_screen_width      := to_number(l_string_values(9));
+      p_screen_height     := to_number(l_string_values(10));
+      p_apex_app_id       := to_number(l_string_values(11));
+      p_apex_page_id      := to_number(l_string_values(12));
       p_apex_event_name   := l_string_values(13);
       p_additional_info   := l_string_values(14);
       --                                        
@@ -194,7 +194,7 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
       p_additional_info   := apex_json.get_varchar2(p_path   => 'additionalInfo',
                                                     p_values => l_json_values);
     ELSE
-      raise_application_error(-20001,
+      raise_application_error(error_rest_missing_values,
                               'Missing required values in JSON payload.');
     END IF;
     --
@@ -243,7 +243,7 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
        OR p_apex_app_id IS NULL
        OR p_apex_page_id IS NULL
        OR p_apex_event_name IS NULL THEN
-      raise_application_error(-20001,
+      raise_application_error(error_rest_missing_values,
                               'Missing required values in JSON payload.');
     END IF;
     --
@@ -277,21 +277,27 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
     IF nvl(dbms_lob.getlength(p_json_clob),
            0) > 0 THEN
       -- parse JSON
-      apexanalytics_app_pkg.parse_analytics_data_json(p_json_clob         => p_json_clob,
-                                                      p_analytics_id      => l_analytics_id,
-                                                      p_agent_name        => l_agent_name,
-                                                      p_agent_version     => l_agent_version,
-                                                      p_agent_language    => l_agent_language,
-                                                      p_os_name           => l_os_name,
-                                                      p_os_version        => l_os_version,
-                                                      p_has_touch_support => l_has_touch_support,
-                                                      p_page_load_time    => l_page_load_time,
-                                                      p_screen_width      => l_screen_width,
-                                                      p_screen_height     => l_screen_height,
-                                                      p_apex_app_id       => l_apex_app_id,
-                                                      p_apex_page_id      => l_apex_page_id,
-                                                      p_apex_event_name   => l_apex_event_name,
-                                                      p_additional_info   => l_additional_info);
+      BEGIN
+        apexanalytics_app_pkg.parse_analytics_data_json(p_json_clob         => p_json_clob,
+                                                        p_analytics_id      => l_analytics_id,
+                                                        p_agent_name        => l_agent_name,
+                                                        p_agent_version     => l_agent_version,
+                                                        p_agent_language    => l_agent_language,
+                                                        p_os_name           => l_os_name,
+                                                        p_os_version        => l_os_version,
+                                                        p_has_touch_support => l_has_touch_support,
+                                                        p_page_load_time    => l_page_load_time,
+                                                        p_screen_width      => l_screen_width,
+                                                        p_screen_height     => l_screen_height,
+                                                        p_apex_app_id       => l_apex_app_id,
+                                                        p_apex_page_id      => l_apex_page_id,
+                                                        p_apex_event_name   => l_apex_event_name,
+                                                        p_additional_info   => l_additional_info);
+      EXCEPTION
+        WHEN OTHERS THEN
+          raise_application_error(error_rest_json_parse,
+                                  'JSON payload cannot be parsed.');
+      END;
       -- check required values
       apexanalytics_app_pkg.check_required_values(p_analytics_id      => l_analytics_id,
                                                   p_agent_name        => l_agent_name,
@@ -339,7 +345,7 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
                       TRUE);
       apex_json.close_object;
     ELSE
-      raise_application_error(-20002,
+      raise_application_error(error_rest_empty_body,
                               'Please provide a JSON payload - Body is empty.');
     END IF;
     --
@@ -501,7 +507,7 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
       IF l_rec_error.err_code IS NOT NULL THEN
         l_exception_message := 'Error-Code: ' || l_rec_error.err_code || chr(10) || 'Error-Type: ' ||
                                l_rec_error.err_type || chr(10) || 'Error-Info: ' || l_rec_error.err_info;
-        raise_application_error(-20004,
+        raise_application_error(error_ipstack_generic,
                                 l_exception_message);
       END IF;
     END IF;

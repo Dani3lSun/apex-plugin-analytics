@@ -1,5 +1,12 @@
 CREATE OR REPLACE PACKAGE apexanalytics_app_pkg IS
   --
+  -- Exceptions Error Codes
+  --
+  error_rest_missing_values CONSTANT NUMBER := -20001;
+  error_rest_empty_body     CONSTANT NUMBER := -20002;
+  error_rest_json_parse     CONSTANT NUMBER := -20003;
+  error_ipstack_generic     CONSTANT NUMBER := -20004;
+  --
   -- Insert data into ANALYTCIS_DATA table
   -- #param p_analytics_id
   -- #param p_agent_name
