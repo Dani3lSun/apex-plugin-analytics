@@ -34,7 +34,15 @@ SELECT analytics_data.id,
           FROM language_list
          WHERE language_list.id = substr(lower(analytics_data.agent_language),
                                          1,
-                                         2)) AS agent_language_main_name
+                                         2)) AS agent_language_main_name,
+       CASE
+         WHEN (analytics_data.os_name = 'iOS' OR analytics_data.os_name = 'Android' OR
+              analytics_data.os_name = 'Windows Phone' OR analytics_data.os_name = 'BlackBerry')
+              AND analytics_data.has_touch_support = 'Y' THEN
+          'Y'
+         ELSE
+          'N'
+       END AS is_mobile_device
   FROM analytics_data,
        analytics_data_geolocation
  WHERE analytics_data.id = analytics_data_geolocation.analytics_data_id(+);
