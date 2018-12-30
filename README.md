@@ -29,16 +29,16 @@ APEX Analytics is a complete bundle which helps you collecting many client side 
 ## Preview
 
 <p align="center">
-  <img src="https://github.com/Dani3lSun/apex-plugin-analytics/blob/master/misc/screen1.png" max-width="600" />
-  <img src="https://github.com/Dani3lSun/apex-plugin-analytics/blob/master/misc/screen2.png" max-width="600" />
+  <img src="https://github.com/Dani3lSun/apex-plugin-analytics/blob/master/misc/screen1.png" width="300" />
+  <img src="https://github.com/Dani3lSun/apex-plugin-analytics/blob/master/misc/screen2.png" width="300" />
 </p>
 <p align="center">
-<img src="https://github.com/Dani3lSun/apex-plugin-analytics/blob/master/misc/screen3.png" max-width="600" />
-<img src="https://github.com/Dani3lSun/apex-plugin-analytics/blob/master/misc/screen4.png" max-width="600" />
+  <img src="https://github.com/Dani3lSun/apex-plugin-analytics/blob/master/misc/screen3.png" width="300" />
+  <img src="https://github.com/Dani3lSun/apex-plugin-analytics/blob/master/misc/screen4.png" width="300" />
 </p>
 <p align="center">
-<img src="https://github.com/Dani3lSun/apex-plugin-analytics/blob/master/misc/screen5.png" max-width="600" />
-<img src="https://github.com/Dani3lSun/apex-plugin-analytics/blob/master/misc/screen6.png" max-width="600" />
+  <img src="https://github.com/Dani3lSun/apex-plugin-analytics/blob/master/misc/screen5.png" width="300" />
+  <img src="https://github.com/Dani3lSun/apex-plugin-analytics/blob/master/misc/screen6.png" width="300" />
 </p>
 
 
