@@ -53,8 +53,8 @@ APEX Analytics is a complete bundle which helps you collecting many client side 
 - **Stop on max. Error Count** - If the REST endpoint is not reachable for some reason or there are other problems, an error counter is set in browsers session storage. If the counter value in session storage exceeds the max allowed counter value, collection & sending information to the server side stops
 
 ### Plugin Events
-- **Web Service Call Success** - DA event that fires when all information are successfully sent to ORDS REST endpoint, **this.data holds the server response object**
-- **Web Service Call Error** - DA event that fires when the REST call the the ORDS endpoint was not successful, **this.data holds the error object**
+- **Web Service Call Success** - DA event that fires when all information are successfully sent to ORDS REST endpoint, *this.data holds the server response object*
+- **Web Service Call Error** - DA event that fires when the REST call the the ORDS endpoint was not successful, *this.data holds the error object*
 
 
 ### How to use

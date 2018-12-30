@@ -1,12 +1,22 @@
 {
   "name": "APEX Analytics",
   "version": "1.0.0",
-  "description": "Oracle APEX Analytics Plugin",
+  "description": "APEX Analytics is a complete bundle which helps you collecting many client side information from your different APEX applications in a central place. Purpose is to give you a deeper understanding of your audience and users and how your applications are used.",
   "keywords": [
     "oracle",
     "apex",
     "plugin",
-    "dynamic_action"
+    "dynamic_action",
+    "tracking",
+    "analysis",
+    "analytics",
+    "user",
+    "browser",
+    "useragent",
+    "client",
+    "clientside",
+    "information",
+    "dashboard"
   ],
   "homepage": "https://github.com/Dani3lSun/apex-plugin-analytics",
   "bugs": {
@@ -33,12 +43,13 @@
     ],
     "apex": {
       "versions": [
+        "5.1.0",
         "18.2.0"
       ],
       "plugin": {
         "internalName": "DE.DANIELH.APEXANALYTICS",
         "type": "dynamic action",
-        "demo": "https://orclapex.io/ords/f?p=280",
+        "demo": "https://apex.oracle.com/pls/apex/f?p=ANALYTICS_DEMO",
         "previewImage": "https://raw.githubusercontent.com/Dani3lSun/apex-plugin-analytics/master/preview.gif"
       }
     }
