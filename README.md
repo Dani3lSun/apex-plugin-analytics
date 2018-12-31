@@ -46,7 +46,21 @@ APEX Analytics is a complete bundle which helps you collecting many client side 
 
 ### Database objects and APEX Analytics app
 
+Connect to the target DB as APEX workspace schema and execute the main install script
+
+```
+cd path/to/unzipped/apex-plugin-analytics/app/db
+sqlplus workspace_schema@database
+@install.sql
+```
+
+After that go to APEX and import the application export file from *path/to/unzipped/apex-plugin-analytics/app/f280.sql*
+
 ### ORDS RESTful service
+
+When your schema is already REST enabled then just import the RESTful export script from *path/to/unzipped/apex-plugin-analytics/app/ORDS_REST_APEX_ANALYTICS_ALL.sql*
+
+Otherwise first REST enable your schema either by using APEX SQL Workshop > RESTful Services or Oracle SQL Developer or using the PL/SQL API *ORDS.enable_schema*
 
 ### APEX Dynamic Action plugin
 - Import plugin file "dynamic_action_plugin_de_danielh_apexanalytics.sql" from **plugin/dist** directory into your application
