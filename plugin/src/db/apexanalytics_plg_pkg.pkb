@@ -18,6 +18,8 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_plg_pkg IS
                                                 'N');
     l_stop_on_max_error      NUMBER := nvl(p_dynamic_action.attribute_03,
                                            3);
+    l_respect_donottrack     VARCHAR2(5) := nvl(p_dynamic_action.attribute_04,
+                                                'N');
     --
     -- other vars
     l_analytics_id_string   VARCHAR2(500);
@@ -378,6 +380,8 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_plg_pkg IS
                     l_encode_webservice_call);
     apex_json.write('stopOnMaxError',
                     l_stop_on_max_error);
+    apex_json.write('respectDoNotTrack',
+                    l_respect_donottrack);
     apex_json.close_object();
     --
     l_component_config_json := apex_json.get_clob_output;

@@ -177,6 +177,45 @@ apex.da.apexAnalytics = {
         return pageLoadTime || 0;
       },
       /**
+       * Check if DoNotTrack browser setting is active
+       * @return {boolean}
+       */
+      isDoNotTrackActive: function() {
+        var isActive = false;
+        // check if browser support DNT
+        if (window.doNotTrack || navigator.doNotTrack || navigator.msDoNotTrack || 'msTrackingProtectionEnabled' in window.external) {
+          // is active
+          if (window.doNotTrack == "1" || navigator.doNotTrack == "yes" || navigator.doNotTrack == "1" || navigator.msDoNotTrack == "1" || window.external.msTrackingProtectionEnabled()) {
+            isActive = true;
+            // is not active
+          } else {
+            isActive = false;
+          }
+          // does not support DNT
+        } else {
+          isActive = false;
+        }
+        return isActive;
+      },
+      /**
+       * Check if DoNotTrack browser setting is active + activated in plugin settings
+       * @param {string} pRespectDoNotTrack
+       * @return {boolean}
+       */
+      isDoNotTrackCompleteActive: function(pRespectDoNotTrack) {
+        var isActive = false;
+        if (pRespectDoNotTrack == 'Y') {
+          if (apexAnalytics.isDoNotTrackActive()) {
+            isActive = true;
+          } else {
+            isActive = false;
+          }
+        } else {
+          isActive = false;
+        }
+        return isActive;
+      },
+      /**
        * Build JSON for Analytics REST Call
        * @param {string} pAnaliticsId
        * @param {string} pEventName
@@ -251,6 +290,7 @@ apex.da.apexAnalytics = {
         var additionalInfoItem = pOptions.additionalInfoItem;
         var encodeWebserviceCall = pOptions.encodeWebserviceCall;
         var stopOnMaxError = pOptions.stopOnMaxError;
+        var respectDoNotTrack = pOptions.respectDoNotTrack;
 
         // debug
         apex.debug.log('apexAnalytics.pluginHandler - analyticsId', analyticsId);
@@ -261,22 +301,25 @@ apex.da.apexAnalytics = {
         apex.debug.log('apexAnalytics.pluginHandler - additionalInfoItem', additionalInfoItem);
         apex.debug.log('apexAnalytics.pluginHandler - encodeWebserviceCall', encodeWebserviceCall);
         apex.debug.log('apexAnalytics.pluginHandler - stopOnMaxError', stopOnMaxError);
+        apex.debug.log('apexAnalytics.pluginHandler - respectDoNotTrack', respectDoNotTrack);
 
-
-        // call analytics web service (only if max error count is not exceeded)
-        if (apexAnalytics.checkErrorCount(stopOnMaxError)) {
-          var analyticsData = apexAnalytics.buildAnalyticsJson(analyticsId, eventName, additionalInfoItem, encodeWebserviceCall);
-          // only process if analytics JSON has been built
-          if (analyticsData) {
-            apexAnalytics.callAnalyticsWebservice(analyticsRestUrl, analyticsData, function(data) {
-              // set error counter in session storage if call is not successful
-              if (!(data.success)) {
-                apexAnalytics.setErrorCountUp();
-              }
-            });
-            // if no analytics JSON can be built --> also set error counter is session storage
-          } else {
-            apexAnalytics.setErrorCountUp();
+        // check if DoNotTrack is not active
+        if (!(apexAnalytics.isDoNotTrackCompleteActive(respectDoNotTrack))) {
+          // call analytics web service (only if max error count is not exceeded)
+          if (apexAnalytics.checkErrorCount(stopOnMaxError)) {
+            var analyticsData = apexAnalytics.buildAnalyticsJson(analyticsId, eventName, additionalInfoItem, encodeWebserviceCall);
+            // only process if analytics JSON has been built
+            if (analyticsData) {
+              apexAnalytics.callAnalyticsWebservice(analyticsRestUrl, analyticsData, function(data) {
+                // set error counter in session storage if call is not successful
+                if (!(data.success)) {
+                  apexAnalytics.setErrorCountUp();
+                }
+              });
+              // if no analytics JSON can be built --> also set error counter is session storage
+            } else {
+              apexAnalytics.setErrorCountUp();
+            }
           }
         }
       }

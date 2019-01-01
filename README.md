@@ -77,10 +77,11 @@ Otherwise first REST enable your schema either by using APEX SQL Workshop > REST
 - **Additional Info Item** - Next to the standard information which the plugin collects and sends to the REST endpoint, you have the possibility to send additional information to the server side, which are saved there
 - **Encode Web Service Call** - The plugin sends a JSON payload via a RESTful POST call. Please decide if this payload is sent with plain information or base64 encoded to hide certain information on first sight
 - **Stop on max. Error Count** - If the REST endpoint is not reachable for some reason or there are other problems, an error counter is set in browsers session storage. If the counter value in session storage exceeds the max allowed counter value, collection & sending information to the server side stops
+- **Respect DoNotTrack Setting** - Respect the users browser DoNotTrack setting and do not collect & send information to the REST endpoint
 
 ### Plugin Events
 - **Web Service Call Success** - DA event that fires when all information are successfully sent to ORDS REST endpoint, *this.data holds the server response object*
-- **Web Service Call Error** - DA event that fires when the REST call the the ORDS endpoint was not successful, *this.data holds the error object*
+- **Web Service Call Error** - DA event that fires when the REST call to ORDS endpoint was not successful, *this.data holds the error object*
 
 
 ### How to use
