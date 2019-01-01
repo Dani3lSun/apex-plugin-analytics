@@ -50,7 +50,7 @@
         "internalName": "DE.DANIELH.APEXANALYTICS",
         "type": "dynamic action",
         "demo": "https://apex.oracle.com/pls/apex/f?p=ANALYTICS_DEMO",
-        "previewImage": "https://raw.githubusercontent.com/Dani3lSun/apex-plugin-analytics/master/preview.gif"
+        "previewImage": "https://raw.githubusercontent.com/Dani3lSun/apex-plugin-analytics/master/misc/preview.png"
       }
     }
   }
