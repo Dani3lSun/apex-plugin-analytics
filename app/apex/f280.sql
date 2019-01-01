@@ -27,7 +27,7 @@ prompt APPLICATION 280 - APEX Analytics
 -- Application Export:
 --   Application:     280
 --   Name:            APEX Analytics
---   Date and Time:   14:05 Tuesday January 1, 2019
+--   Date and Time:   15:49 Tuesday January 1, 2019
 --   Exported By:     DHOCHLEITNER
 --   Flashback:       0
 --   Export Type:     Application Export
@@ -119,7 +119,7 @@ wwv_flow_api.create_flow(
 ,p_substitution_string_01=>'APP_NAME'
 ,p_substitution_value_01=>'APEX Analytics'
 ,p_last_updated_by=>'DHOCHLEITNER'
-,p_last_upd_yyyymmddhh24miss=>'20190101140449'
+,p_last_upd_yyyymmddhh24miss=>'20190101154908'
 ,p_file_prefix => nvl(wwv_flow_application_install.get_static_app_file_prefix,'')
 ,p_files_version=>6
 ,p_ui_type_name => null
@@ -467,7 +467,7 @@ wwv_flow_api.create_plugin_setting(
  p_id=>wwv_flow_api.id(1744147313394667)
 ,p_plugin_type=>'DYNAMIC ACTION'
 ,p_plugin=>'PLUGIN_DE.DANIELH.APEXANALYTICS'
-,p_attribute_01=>'https://orclapex.io/ords/apex_analytics/data/collect'
+,p_attribute_01=>'http://localhost:8080/ords/apex_analytics/data/collect'
 );
 wwv_flow_api.create_plugin_setting(
  p_id=>wwv_flow_api.id(2141273005889026)
