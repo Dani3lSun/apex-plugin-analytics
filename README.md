@@ -27,7 +27,7 @@ APEX Analytics is a complete bundle which helps you collecting many client side 
 	- [License](#license)
 
 
-##How it works
+## How it works
 ![](https://github.com/Dani3lSun/apex-plugin-analytics/blob/master/misc/apex_analytics_diagram.png)
 
 
