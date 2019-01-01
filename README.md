@@ -18,8 +18,9 @@ APEX Analytics is a complete bundle which helps you collecting many client side 
 		- [ORDS RESTful service](#ords-restful-service)
 		- [APEX Dynamic Action plugin](#apex-dynamic-action-plugin)
 		- [Installation note](#installation-note)
+	- [Application settings](#application-settings)
 	- [Plugin settings](#plugin-settings)
-		- [Application settings](#application-settings)
+		- [Application-wide settings](#application-wide-settings)
 		- [Component settings](#component-settings)
 		- [Plugin Events](#plugin-events)
 		- [How to use](#how-to-use)
@@ -81,9 +82,22 @@ If you plan to change the application id (APP_ID) of APEX Analytics app (default
 *Please do this step before installing the DB objects or importing ORDS RESTful service*
 
 
+## Application settings
+After installation navigate to Administration > Application Settings (in APEX Analytics app), there you can change several settings:
+
+- **Enable Anonymous IP Tracking** - This option enables tracking & logging of IP addresses. Additionally the geolocation feature is also enabled by this setting. IP addresses are stored in a privacy-friendly manner, so the last bytes of each address are masked, e.g. 192.168.2.100 > 192.168.2.xxx or 192.168.xxx.xxx
+- **Bytes to remove & mask from IP address** - This option controls how privacy-friendly IP addresses are masked. Either 1 byte: 192.168.2.xxx or 2 bytes: 192.168.xxx.xxx. 1 byte is way more accurate when it comes to geolocating. 2 bytes are more privacy-friendly
+- **ipstack Geolocation API - Base URL** - This site is using ipstack as service provider for geolocation. The masked IP address is transferred to them. They return the continent and country name of this IP address. This setting is the base URL of their API endpoint, if you choose one of the commercial plans, you can use https instead of plain http
+- **ipstack Geolocation API - API Key** - This setting is for the API key which ipstack provides to you after sign up
+- **ipstack Geolocation API - Wallet Path** - If you have an commercial ipstack plan and you are using a https base URL, then you have to create a Oracle wallet containing the sites certificates. Enter the file system path of the Oracle wallet
+- **ipstack Geolocation API - Wallet Password** - Enter the password of your Oracle wallet
+
+*Note: The geolocation feature runs asynchronously via a Oracle Scheduler Job (default: every 15 mins). The default @install.sql script installs this job, please read the installation note above before installing!*
+
+
 ## Plugin settings
 
-### Application settings
+### Application-wide settings
 - **Analytics REST Web Service URL** - URL of the APEX Analytics server side REST endpoint (ORDS)
 
 ### Component settings
