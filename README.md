@@ -17,6 +17,7 @@ APEX Analytics is a complete bundle which helps you collecting many client side 
 		- [Database objects and APEX Analytics app](#database-objects-and-apex-analytics-app)
 		- [ORDS RESTful service](#ords-restful-service)
 		- [APEX Dynamic Action plugin](#apex-dynamic-action-plugin)
+		- [Installation note](#installation-note)
 	- [Plugin settings](#plugin-settings)
 		- [Application settings](#application-settings)
 		- [Component settings](#component-settings)
@@ -71,6 +72,13 @@ Otherwise first REST enable your schema either by using APEX SQL Workshop > REST
 - Import plugin file "dynamic_action_plugin_de_danielh_apexanalytics.sql" from **plugin/dist** directory into your application
 - *Optional:* Deploy the JS/CSS files from **plugin/src/files** directory on your web server and change the "Plugin File Prefix" to web servers folder path.
 - *Optional:* Compile the plugin PL/SQL package in your APEX parsing schema and change the plugin render/ajax function to include the package object name. The package files are located in **plugin/src/db** directory.
+
+### Installation note
+If you plan to change the application id (APP_ID) of APEX Analytics app (default 280) please change 2 scripts to reflect your APP_ID changes. Change the current value 280 to your APP_ID:
+- path/to/unzipped/apex-plugin-analytics/app/ORDS_REST_APEX_ANALYTICS_ALL.sql
+- path/to/unzipped/apex-plugin-analytics/app/db/jobs/create_geolocation_scheduler_job.sql
+
+*Please do this step before installing the DB objects or importing ORDS RESTful service*
 
 
 ## Plugin settings
