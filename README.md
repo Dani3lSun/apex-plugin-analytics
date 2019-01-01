@@ -63,6 +63,8 @@ sqlplus workspace_schema@database
 
 After that go to APEX and import the application export file from *path/to/unzipped/apex-plugin-analytics/app/f280.sql*
 
+*Note: APEX Analytics app requires at least a APEX 18.2 installation!*
+
 ### ORDS RESTful service
 
 When your schema is already REST enabled then just import the RESTful export script from *path/to/unzipped/apex-plugin-analytics/app/ORDS_REST_APEX_ANALYTICS_ALL.sql*
@@ -73,6 +75,8 @@ Otherwise first REST enable your schema either by using APEX SQL Workshop > REST
 - Import plugin file "dynamic_action_plugin_de_danielh_apexanalytics.sql" from **plugin/dist** directory into your application
 - *Optional:* Deploy the JS/CSS files from **plugin/src/files** directory on your web server and change the "Plugin File Prefix" to web servers folder path.
 - *Optional:* Compile the plugin PL/SQL package in your APEX parsing schema and change the plugin render/ajax function to include the package object name. The package files are located in **plugin/src/db** directory.
+
+*Note: The DA plugin is shipped in 2 versions, one is compatible with APEX 5.1 and the other with APEX 18.2!*
 
 ### Installation note
 If you plan to change the application id (APP_ID) of APEX Analytics app (default 280) please change 2 scripts to reflect your APP_ID changes. Change the current value 280 to your APP_ID:
