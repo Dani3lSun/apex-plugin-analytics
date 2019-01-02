@@ -27,7 +27,7 @@ prompt APPLICATION 280 - APEX Analytics
 -- Application Export:
 --   Application:     280
 --   Name:            APEX Analytics
---   Date and Time:   15:49 Tuesday January 1, 2019
+--   Date and Time:   13:23 Wednesday January 2, 2019
 --   Exported By:     DHOCHLEITNER
 --   Flashback:       0
 --   Export Type:     Application Export
@@ -42,7 +42,7 @@ prompt APPLICATION 280 - APEX Analytics
 --     Processes:               22
 --     Regions:                 71
 --     Buttons:                 36
---     Dynamic Actions:         27
+--     Dynamic Actions:         28
 --   Shared Components:
 --     Logic:
 --       App Settings:           6
@@ -119,7 +119,7 @@ wwv_flow_api.create_flow(
 ,p_substitution_string_01=>'APP_NAME'
 ,p_substitution_value_01=>'APEX Analytics'
 ,p_last_updated_by=>'DHOCHLEITNER'
-,p_last_upd_yyyymmddhh24miss=>'20190101154908'
+,p_last_upd_yyyymmddhh24miss=>'20190102132341'
 ,p_file_prefix => nvl(wwv_flow_application_install.get_static_app_file_prefix,'')
 ,p_files_version=>6
 ,p_ui_type_name => null
@@ -19336,7 +19336,7 @@ wwv_flow_api.create_page(
 ,p_page_template_options=>'#DEFAULT#'
 ,p_protection_level=>'C'
 ,p_last_updated_by=>'DHOCHLEITNER'
-,p_last_upd_yyyymmddhh24miss=>'20190101140331'
+,p_last_upd_yyyymmddhh24miss=>'20190102132223'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(1727386020507712)
@@ -19388,13 +19388,15 @@ wwv_flow_api.create_jet_chart(
 ,p_stack=>'off'
 ,p_sorting=>'label-asc'
 ,p_fill_multi_series_gaps=>true
-,p_zoom_and_scroll=>'off'
+,p_zoom_and_scroll=>'delayed'
+,p_initial_zooming=>'none'
 ,p_tooltip_rendered=>'Y'
 ,p_show_series_name=>true
 ,p_show_group_name=>true
 ,p_show_value=>true
 ,p_show_label=>true
 ,p_legend_rendered=>'off'
+,p_overview_rendered=>'on'
 );
 wwv_flow_api.create_jet_chart_series(
  p_id=>wwv_flow_api.id(1756849008311105)
@@ -19517,13 +19519,15 @@ wwv_flow_api.create_jet_chart(
 ,p_stack=>'off'
 ,p_sorting=>'label-asc'
 ,p_fill_multi_series_gaps=>true
-,p_zoom_and_scroll=>'off'
+,p_zoom_and_scroll=>'delayed'
+,p_initial_zooming=>'none'
 ,p_tooltip_rendered=>'Y'
 ,p_show_series_name=>true
 ,p_show_group_name=>true
 ,p_show_value=>true
 ,p_show_label=>true
 ,p_legend_rendered=>'off'
+,p_overview_rendered=>'on'
 );
 wwv_flow_api.create_jet_chart_series(
  p_id=>wwv_flow_api.id(1757391112311110)
@@ -19802,13 +19806,15 @@ wwv_flow_api.create_jet_chart(
 ,p_stack=>'off'
 ,p_sorting=>'label-asc'
 ,p_fill_multi_series_gaps=>true
-,p_zoom_and_scroll=>'off'
+,p_zoom_and_scroll=>'delayed'
+,p_initial_zooming=>'none'
 ,p_tooltip_rendered=>'Y'
 ,p_show_series_name=>true
 ,p_show_group_name=>true
 ,p_show_value=>true
 ,p_show_label=>true
 ,p_legend_rendered=>'off'
+,p_overview_rendered=>'on'
 );
 wwv_flow_api.create_jet_chart_series(
  p_id=>wwv_flow_api.id(2655469798335507)
@@ -20826,11 +20832,19 @@ wwv_flow_api.create_page_item(
 '           iv_analytics_data.apex_app_id) AS display_val,',
 '       iv_analytics_data.apex_app_id AS return_val',
 '  FROM (SELECT DISTINCT analytics_data.apex_app_id',
-'          FROM analytics_data) iv_analytics_data,',
+'          FROM analytics_data',
+'         WHERE trunc(analytics_data.date_created) BETWEEN',
+'               nvl(to_date(:p1_date_from,',
+'                           ''DD-MON-YYYY''),',
+'                   SYSDATE - 36500) AND nvl(to_date(:p1_date_to,',
+'                                                    ''DD-MON-YYYY''),',
+'                                            SYSDATE)) iv_analytics_data,',
 '       apex_apps',
 ' WHERE iv_analytics_data.apex_app_id = apex_apps.app_id(+)',
 ' ORDER BY 1'))
 ,p_lov_display_null=>'YES'
+,p_lov_cascade_parent_items=>'P1_DATE_FROM,P1_DATE_TO'
+,p_ajax_optimize_refresh=>'Y'
 ,p_field_template=>wwv_flow_api.id(1693384741507690)
 ,p_item_template_options=>'#DEFAULT#:t-Form-fieldContainer--stretchInputs'
 ,p_lov_display_extra=>'NO'
@@ -20851,7 +20865,7 @@ wwv_flow_api.create_page_item(
 ,p_cSize=>30
 ,p_field_template=>wwv_flow_api.id(1693460990507690)
 ,p_item_template_options=>'#DEFAULT#'
-,p_attribute_04=>'button'
+,p_attribute_04=>'both'
 ,p_attribute_05=>'N'
 ,p_attribute_07=>'NONE'
 );
@@ -20867,7 +20881,7 @@ wwv_flow_api.create_page_item(
 ,p_begin_on_new_line=>'N'
 ,p_field_template=>wwv_flow_api.id(1693460990507690)
 ,p_item_template_options=>'#DEFAULT#'
-,p_attribute_04=>'button'
+,p_attribute_04=>'both'
 ,p_attribute_05=>'N'
 ,p_attribute_07=>'NONE'
 );
@@ -20920,8 +20934,16 @@ wwv_flow_api.create_page_item(
 'SELECT iv_analytics_data.analytics_id AS display_val,',
 '       iv_analytics_data.analytics_id AS return_val',
 '  FROM (SELECT DISTINCT analytics_data.analytics_id',
-'          FROM analytics_data) iv_analytics_data'))
+'          FROM analytics_data',
+'         WHERE trunc(analytics_data.date_created) BETWEEN',
+'               nvl(to_date(:p1_date_from,',
+'                           ''DD-MON-YYYY''),',
+'                   SYSDATE - 36500) AND nvl(to_date(:p1_date_to,',
+'                                                    ''DD-MON-YYYY''),',
+'                                            SYSDATE)) iv_analytics_data'))
 ,p_lov_display_null=>'YES'
+,p_lov_cascade_parent_items=>'P1_DATE_FROM,P1_DATE_TO'
+,p_ajax_optimize_refresh=>'Y'
 ,p_begin_on_new_line=>'N'
 ,p_field_template=>wwv_flow_api.id(1693384741507690)
 ,p_item_template_options=>'#DEFAULT#:t-Form-fieldContainer--stretchInputs'
@@ -20993,8 +21015,27 @@ wwv_flow_api.create_page_item(
 ,p_attribute_01=>'APPLICATION'
 );
 wwv_flow_api.create_page_da_event(
+ p_id=>wwv_flow_api.id(2945280928302517)
+,p_name=>'RefreshFilterAfterDate'
+,p_event_sequence=>15
+,p_triggering_element_type=>'ITEM'
+,p_triggering_element=>'P1_DATE_TO,P1_DATE_FROM'
+,p_bind_type=>'bind'
+,p_bind_event_type=>'change'
+);
+wwv_flow_api.create_page_da_action(
+ p_id=>wwv_flow_api.id(2945323827302518)
+,p_event_id=>wwv_flow_api.id(2945280928302517)
+,p_event_result=>'TRUE'
+,p_action_sequence=>10
+,p_execute_on_page_init=>'N'
+,p_action=>'NATIVE_REFRESH'
+,p_affected_elements_type=>'ITEM'
+,p_affected_elements=>'P1_APP_ID,P1_ANALYTICS_ID'
+);
+wwv_flow_api.create_page_da_event(
  p_id=>wwv_flow_api.id(1815828544496725)
-,p_name=>'RefreshAfterFilter'
+,p_name=>'RefreshDashboardAfterFilter'
 ,p_event_sequence=>20
 ,p_triggering_element_type=>'ITEM'
 ,p_triggering_element=>'P1_DATE_TO,P1_DATE_FROM,P1_APP_ID,P1_ANALYTICS_ID,P1_SHOW_PERCENTAGE'
@@ -21071,6 +21112,9 @@ wwv_flow_api.create_page_da_action(
 ,p_affected_elements_type=>'REGION'
 ,p_affected_region_id=>wwv_flow_api.id(1758840403311125)
 );
+end;
+/
+begin
 wwv_flow_api.create_page_da_action(
  p_id=>wwv_flow_api.id(1816669276496733)
 ,p_event_id=>wwv_flow_api.id(1815828544496725)
@@ -21121,9 +21165,6 @@ wwv_flow_api.create_page_da_action(
 ,p_affected_elements_type=>'REGION'
 ,p_affected_region_id=>wwv_flow_api.id(2079077232997044)
 );
-end;
-/
-begin
 wwv_flow_api.create_page_da_action(
  p_id=>wwv_flow_api.id(2654985101335502)
 ,p_event_id=>wwv_flow_api.id(1815828544496725)
@@ -21147,7 +21188,7 @@ wwv_flow_api.create_page_da_action(
 wwv_flow_api.create_page_da_event(
  p_id=>wwv_flow_api.id(1817073651496737)
 ,p_name=>'RemoveFilter'
-,p_event_sequence=>30
+,p_event_sequence=>40
 ,p_triggering_element_type=>'BUTTON'
 ,p_triggering_button_id=>wwv_flow_api.id(1816947290496736)
 ,p_bind_type=>'bind'
@@ -21197,7 +21238,7 @@ wwv_flow_api.create_page_da_action(
 wwv_flow_api.create_page_da_event(
  p_id=>wwv_flow_api.id(1817480843496741)
 ,p_name=>'RefreshOSChart'
-,p_event_sequence=>40
+,p_event_sequence=>50
 ,p_triggering_element_type=>'ITEM'
 ,p_triggering_element=>'P1_OS_SHOW_VERSION'
 ,p_bind_type=>'bind'
@@ -21216,7 +21257,7 @@ wwv_flow_api.create_page_da_action(
 wwv_flow_api.create_page_da_event(
  p_id=>wwv_flow_api.id(1817736710496744)
 ,p_name=>'RefreshBrowserChart'
-,p_event_sequence=>50
+,p_event_sequence=>60
 ,p_triggering_element_type=>'ITEM'
 ,p_triggering_element=>'P1_AGENT_SHOW_VERSION'
 ,p_bind_type=>'bind'
@@ -21235,7 +21276,7 @@ wwv_flow_api.create_page_da_action(
 wwv_flow_api.create_page_da_event(
  p_id=>wwv_flow_api.id(2847977834426425)
 ,p_name=>'RefreshLanguageChart'
-,p_event_sequence=>60
+,p_event_sequence=>70
 ,p_triggering_element_type=>'ITEM'
 ,p_triggering_element=>'P1_SHOW_LANGUAGE_NAME'
 ,p_bind_type=>'bind'
@@ -21254,7 +21295,7 @@ wwv_flow_api.create_page_da_action(
 wwv_flow_api.create_page_da_event(
  p_id=>wwv_flow_api.id(2077189777997025)
 ,p_name=>'EnableDisableStickyFilterRegion'
-,p_event_sequence=>70
+,p_event_sequence=>80
 ,p_triggering_element_type=>'ITEM'
 ,p_triggering_element=>'P1_ENABLE_STICKY_REGION'
 ,p_condition_element=>'P1_ENABLE_STICKY_REGION'
@@ -21287,7 +21328,7 @@ wwv_flow_api.create_page_da_action(
 wwv_flow_api.create_page_da_event(
  p_id=>wwv_flow_api.id(2077639903997030)
 ,p_name=>'MoveClearFilterButtonToHeader'
-,p_event_sequence=>80
+,p_event_sequence=>90
 ,p_bind_type=>'bind'
 ,p_bind_event_type=>'ready'
 );
@@ -21305,7 +21346,7 @@ wwv_flow_api.create_page_da_action(
 wwv_flow_api.create_page_da_event(
  p_id=>wwv_flow_api.id(2158690705544804)
 ,p_name=>'RefreshDateActionsChart'
-,p_event_sequence=>90
+,p_event_sequence=>100
 ,p_triggering_element_type=>'ITEM'
 ,p_triggering_element=>'P1_DATE_ACTIONS_SORT_BY,P1_DATE_ACTIONS_PERIOD'
 ,p_bind_type=>'bind'
@@ -21324,7 +21365,7 @@ wwv_flow_api.create_page_da_action(
 wwv_flow_api.create_page_da_event(
  p_id=>wwv_flow_api.id(2158894126544806)
 ,p_name=>'ExpandFilterRegion'
-,p_event_sequence=>100
+,p_event_sequence=>110
 ,p_triggering_condition_type=>'JAVASCRIPT_EXPRESSION'
 ,p_triggering_expression=>'$v(''P1_DATE_FROM'').length > 0 || $v(''P1_DATE_TO'').length > 0 || $v(''P1_APP_ID'').length > 0 || $v(''P1_ANALYTICS_ID'').length > 0'
 ,p_bind_type=>'bind'

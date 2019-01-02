@@ -680,22 +680,29 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
                                                         p_continent_name => l_continent_name,
                                                         p_country_code   => l_country_code,
                                                         p_country_name   => l_country_name);
-          -- only insert if REST call returned some data
-          IF l_continent_code IS NOT NULL
-             AND l_continent_name IS NOT NULL
-             AND l_country_code IS NOT NULL
-             AND l_country_name IS NOT NULL THEN
-            --
-            l_prepared_ip := l_rec_analytics_data_ip.prepared_ip;
-            -- loop over ids for particular ip address and insert
-            FOR l_rec_analytics_data_ids IN l_cur_analytics_data_ids LOOP
+          --
+          l_prepared_ip := l_rec_analytics_data_ip.prepared_ip;
+          -- loop over ids for particular ip address and insert
+          FOR l_rec_analytics_data_ids IN l_cur_analytics_data_ids LOOP
+            -- only insert if REST call returned some data
+            IF l_continent_code IS NOT NULL
+               AND l_continent_name IS NOT NULL
+               AND l_country_code IS NOT NULL
+               AND l_country_name IS NOT NULL THEN
+              --
               apexanalytics_app_pkg.insert_ad_geolocation(p_analytics_data_id => l_rec_analytics_data_ids.id,
                                                           p_continent_code    => l_continent_code,
                                                           p_continent_name    => l_continent_name,
                                                           p_country_code      => l_country_code,
                                                           p_country_name      => l_country_name);
-            END LOOP;
-          END IF;
+            
+              -- if not all information are provided, empty anonymous_ip_address --> so it is not processed in next run
+            ELSE
+              UPDATE analytics_data
+                 SET analytics_data.anonymous_ip_address = NULL
+               WHERE analytics_data.id = l_rec_analytics_data_ids.id;
+            END IF;
+          END LOOP;
         END LOOP;
       END IF;
     END IF;
