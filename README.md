@@ -129,6 +129,8 @@ https://apex.oracle.com/pls/apex/f?p=ANALYTICS_DEMO
 
 ## Changelog
 
+#### 1.0.1 - Added JET zoom feature to some dashboard charts / enhanced ipstack geolocation job to make less REST calls
+
 #### 1.0.0 - Initial Release
 
 
