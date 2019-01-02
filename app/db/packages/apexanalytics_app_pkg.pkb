@@ -630,19 +630,28 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
     l_continent_name      analytics_data_geolocation.continent_name%TYPE;
     l_country_code        analytics_data_geolocation.country_code%TYPE;
     l_country_name        analytics_data_geolocation.country_name%TYPE;
+    l_prepared_ip         analytics_data.anonymous_ip_address%TYPE;
     -- all ip addresses which are not already stored + only process 150 at once (e.g. dbms_scheduler)
     CURSOR l_cur_analytics_data_ip IS
-      SELECT iv_analytics_data.id,
-             iv_analytics_data.prepared_ip
-        FROM (SELECT analytics_data.id,
-                     apexanalytics_app_pkg.get_prepared_ip_address(p_ip_address => analytics_data.anonymous_ip_address) AS prepared_ip,
+      SELECT iv2_analytics_data.prepared_ip
+        FROM (SELECT iv_analytics_data.prepared_ip,
                      rownum AS row_num
-                FROM analytics_data
-               WHERE analytics_data.anonymous_ip_address IS NOT NULL
-                 AND analytics_data.id NOT IN (SELECT analytics_data_geolocation.analytics_data_id
-                                                 FROM analytics_data_geolocation)
-               ORDER BY analytics_data.id) iv_analytics_data
-       WHERE iv_analytics_data.row_num <= 150;
+                FROM (SELECT DISTINCT apexanalytics_app_pkg.get_prepared_ip_address(p_ip_address => analytics_data.anonymous_ip_address) AS prepared_ip
+                        FROM analytics_data
+                       WHERE analytics_data.anonymous_ip_address IS NOT NULL
+                         AND analytics_data.id NOT IN (SELECT analytics_data_geolocation.analytics_data_id
+                                                         FROM analytics_data_geolocation)) iv_analytics_data) iv2_analytics_data
+       WHERE iv2_analytics_data.row_num <= 150;
+    -- get ids for distinct ip addresses from above
+    CURSOR l_cur_analytics_data_ids IS
+      SELECT analytics_data.id
+        FROM analytics_data
+       WHERE analytics_data.anonymous_ip_address IS NOT NULL
+         AND analytics_data.id NOT IN (SELECT analytics_data_geolocation.analytics_data_id
+                                         FROM analytics_data_geolocation)
+         AND (SELECT apexanalytics_app_pkg.get_prepared_ip_address(p_ip_address => analytics_data.anonymous_ip_address)
+                FROM dual) = l_prepared_ip;
+  
     --
   BEGIN
     -- check if ip tracking is enabled
@@ -659,7 +668,7 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
       -- only process if settings are there
       IF l_ipstack_base_url IS NOT NULL
          AND l_ipstack_api_key IS NOT NULL THEN
-        --
+        -- loop over distinct ip addresses
         FOR l_rec_analytics_data_ip IN l_cur_analytics_data_ip LOOP
           -- REST call to ipstack
           apexanalytics_app_pkg.get_ipstack_geolocation(p_base_url       => l_ipstack_base_url,
@@ -677,11 +686,15 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
              AND l_country_code IS NOT NULL
              AND l_country_name IS NOT NULL THEN
             --
-            apexanalytics_app_pkg.insert_ad_geolocation(p_analytics_data_id => l_rec_analytics_data_ip.id,
-                                                        p_continent_code    => l_continent_code,
-                                                        p_continent_name    => l_continent_name,
-                                                        p_country_code      => l_country_code,
-                                                        p_country_name      => l_country_name);
+            l_prepared_ip := l_rec_analytics_data_ip.prepared_ip;
+            -- loop over ids for particular ip address and insert
+            FOR l_rec_analytics_data_ids IN l_cur_analytics_data_ids LOOP
+              apexanalytics_app_pkg.insert_ad_geolocation(p_analytics_data_id => l_rec_analytics_data_ids.id,
+                                                          p_continent_code    => l_continent_code,
+                                                          p_continent_name    => l_continent_name,
+                                                          p_country_code      => l_country_code,
+                                                          p_country_name      => l_country_name);
+            END LOOP;
           END IF;
         END LOOP;
       END IF;
