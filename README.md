@@ -129,6 +129,8 @@ https://apex.oracle.com/pls/apex/f?p=ANALYTICS_DEMO
 
 ## Changelog
 
+#### 1.0.4 - Added optional background image to login page (can be configured in app settings) / Created a native APEX plugin for amcharts world map region / Some dashboard enhancements
+
 #### 1.0.3 - Added world map region to dashboard page
 
 #### 1.0.2 - Changed dashboard chart refresh to a debouncing mechanism (much less round trips to DB and better performance)

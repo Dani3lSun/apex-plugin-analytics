@@ -26,7 +26,7 @@ prompt APPLICATION 280 - APEX Analytics
 -- Application Export:
 --   Application:     280
 --   Name:            APEX Analytics
---   Date and Time:   21:21 Friday January 4, 2019
+--   Date and Time:   20:57 Saturday January 5, 2019
 --   Exported By:     APEX_ANALYTICS
 --   Flashback:       0
 --   Export Type:     Application Export
@@ -36,15 +36,15 @@ prompt APPLICATION 280 - APEX Analytics
 
 -- Application Statistics:
 --   Pages:                     20
---     Items:                   78
+--     Items:                   79
 --     Validations:              7
---     Processes:               23
---     Regions:                 72
+--     Processes:               22
+--     Regions:                 73
 --     Buttons:                 36
---     Dynamic Actions:         30
+--     Dynamic Actions:         29
 --   Shared Components:
 --     Logic:
---       App Settings:           6
+--       App Settings:           7
 --       Build Options:          1
 --       Data Loading:           2
 --     Navigation:
@@ -53,7 +53,7 @@ prompt APPLICATION 280 - APEX Analytics
 --         Entries:              3
 --     Security:
 --       Authentication:         1
---       Authorization:          1
+--       Authorization:          2
 --     User Interface:
 --       Themes:                 1
 --       Templates:
@@ -68,7 +68,7 @@ prompt APPLICATION 280 - APEX Analytics
 --         Report:              10
 --       LOVs:                   4
 --       Shortcuts:              1
---       Plug-ins:               3
+--       Plug-ins:               4
 --     Globalization:
 --     Reports:
 --     E-Mail:
@@ -487,9 +487,9 @@ wwv_flow_api.create_plugin(
 ,p_substitute_attributes=>true
 ,p_subscribe_plugin_settings=>true
 ,p_help_text=>'<p>APEX Analytics is a Dynamic Action plugin which collects client / browser information and sends this to an REST endpoint.</p>'
-,p_version_identifier=>'1.0.3'
+,p_version_identifier=>'1.0.4'
 ,p_about_url=>'https://github.com/Dani3lSun/apex-plugin-analytics'
-,p_files_version=>1204
+,p_files_version=>1208
 );
 wwv_flow_api.create_plugin_attribute(
  p_id=>wwv_flow_api.id(6302535965038691)
@@ -664,7 +664,7 @@ end;
 /
 begin
 wwv_flow_api.g_varchar2_table := wwv_flow_api.empty_varchar2_table;
-wwv_flow_api.g_varchar2_table(1) := '2F2A2A0A202A204150455820416E616C79746963730A202A20417574686F723A2044616E69656C20486F63686C6569746E65720A202A2056657273696F6E3A20312E302E330A202A2F0A0A2F2A2A0A202A20457874656E6420617065782E64610A202A2F';
+wwv_flow_api.g_varchar2_table(1) := '2F2A2A0A202A204150455820416E616C79746963730A202A20417574686F723A2044616E69656C20486F63686C6569746E65720A202A2056657273696F6E3A20312E302E340A202A2F0A0A2F2A2A0A202A20457874656E6420617065782E64610A202A2F';
 wwv_flow_api.g_varchar2_table(2) := '0A617065782E64612E61706578416E616C7974696373203D207B0A20202F2A2A0A2020202A20506C7567696E2068616E646C6572202D2063616C6C65642066726F6D20706C7567696E2072656E6465722066756E6374696F6E0A2020202A204070617261';
 wwv_flow_api.g_varchar2_table(3) := '6D207B6F626A6563747D20704F7074696F6E730A2020202A2F0A2020706C7567696E48616E646C65723A2066756E6374696F6E28704F7074696F6E7329207B0A202020202F2A2A0A20202020202A204D61696E204E616D6573706163650A20202020202A';
 wwv_flow_api.g_varchar2_table(4) := '2F0A202020207661722061706578416E616C7974696373203D207B0A2020202020202F2A2A0A202020202020202A2043616C6C204150455820416E616C797469637320524553542077656220736572766963650A202020202020202A2040706172616D20';
