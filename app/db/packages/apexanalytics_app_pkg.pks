@@ -115,6 +115,11 @@ CREATE OR REPLACE PACKAGE apexanalytics_app_pkg IS
   -- #return BOOLEAN
   FUNCTION is_anonym_ip_tracking_enabled(p_app_id IN NUMBER) RETURN BOOLEAN;
   --
+  -- Check if background image on login page is enabled
+  -- #param p_app_id
+  -- #return BOOLEAN
+  FUNCTION is_login_background_enabled(p_app_id IN NUMBER) RETURN BOOLEAN;
+  --
   -- Get prepared IP address, xxx is replaces with 1 --> 8.8.xxx.xxx > 8.8.1.1
   -- #param p_ip_address
   -- #return VARCHAR2
