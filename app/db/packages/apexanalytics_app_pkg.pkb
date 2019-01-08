@@ -152,7 +152,9 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
       p_os_version        := l_string_values(6);
       p_has_touch_support := nvl(l_string_values(7),
                                  'N');
-      p_page_load_time    := nvl(to_number(l_string_values(8)),
+      p_page_load_time    := nvl(to_number(l_string_values(8),
+                                           '999D999',
+                                           'NLS_NUMERIC_CHARACTERS=''.,'''),
                                  0);
       p_screen_width      := to_number(l_string_values(9));
       p_screen_height     := to_number(l_string_values(10));
