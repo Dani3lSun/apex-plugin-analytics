@@ -111,6 +111,16 @@ CREATE OR REPLACE PACKAGE apexanalytics_app_pkg IS
   -- #return VARCHAR2
   FUNCTION get_anonymous_remote_ip(p_remove_ip_bytes IN NUMBER := 1) RETURN VARCHAR2;
   --
+  -- Check if a given IP address is a public IP (no internal network)
+  -- #param p_ip_address
+  -- #return BOOLEAN
+  FUNCTION is_ip_address_public(p_ip_address IN VARCHAR2) RETURN BOOLEAN;
+  --
+  -- Check if a given IP address is a public IP (no internal network)
+  -- #param p_ip_address
+  -- #return VARCHAR2
+  FUNCTION is_ip_address_public_yn(p_ip_address IN VARCHAR2) RETURN VARCHAR2;
+  --
   -- Check if anonymous IP tracking is enabled in App-Settings
   -- #param p_app_id
   -- #return BOOLEAN

@@ -412,6 +412,81 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
     --
   END get_anonymous_remote_ip;
   --
+  -- Check if a given IP address is a public IP (no internal network)
+  -- #param p_ip_address
+  -- #return BOOLEAN
+  FUNCTION is_ip_address_public(p_ip_address IN VARCHAR2) RETURN BOOLEAN IS
+    --
+    l_is_public           BOOLEAN := FALSE;
+    l_first_ip_subnet     NUMBER;
+    l_second_ip_substring VARCHAR2(50);
+    l_second_ip_subnet    NUMBER;
+    --
+  BEGIN
+    --
+    l_first_ip_subnet     := to_number(substr(p_ip_address,
+                                              1,
+                                              instr(p_ip_address,
+                                                    '.') - 1));
+    l_second_ip_substring := substr(p_ip_address,
+                                    1,
+                                    instr(p_ip_address,
+                                          '.',
+                                          1,
+                                          2) - 1);
+    l_second_ip_subnet    := to_number(substr(l_second_ip_substring,
+                                              instr(l_second_ip_substring,
+                                                    '.') + 1,
+                                              length(l_second_ip_substring)));
+    -- 10.0.0.0 – 10.255.255.255
+    IF l_first_ip_subnet = 10 THEN
+      IF l_second_ip_subnet BETWEEN 0 AND 255 THEN
+        l_is_public := FALSE;
+      ELSE
+        l_is_public := TRUE;
+      END IF;
+      -- 172.16.0.0 – 172.31.255.255
+    ELSIF l_first_ip_subnet = 172 THEN
+      IF l_second_ip_subnet BETWEEN 16 AND 31 THEN
+        l_is_public := FALSE;
+      ELSE
+        l_is_public := TRUE;
+      END IF;
+      -- 192.168.0.0 – 192.168.255.255
+    ELSIF l_first_ip_subnet = 192
+          AND l_second_ip_subnet = 168 THEN
+      l_is_public := FALSE;
+      -- public ip
+    ELSE
+      l_is_public := TRUE;
+    END IF;
+    --
+    RETURN l_is_public;
+    --
+  END is_ip_address_public;
+  --
+  -- Check if a given IP address is a public IP (no internal network)
+  -- #param p_ip_address
+  -- #return VARCHAR2
+  FUNCTION is_ip_address_public_yn(p_ip_address IN VARCHAR2) RETURN VARCHAR2 IS
+    --
+    l_is_public    BOOLEAN := FALSE;
+    l_is_public_yn VARCHAR2(5) := 'N';
+    --
+  BEGIN
+    --
+    l_is_public := apexanalytics_app_pkg.is_ip_address_public(p_ip_address => p_ip_address);
+    --
+    IF l_is_public THEN
+      l_is_public_yn := 'Y';
+    ELSE
+      l_is_public_yn := 'N';
+    END IF;
+    --
+    RETURN l_is_public_yn;
+    --
+  END is_ip_address_public_yn;
+  --
   -- Check if anonymous IP tracking is enabled in App-Settings
   -- #param p_app_id
   -- #return BOOLEAN
@@ -659,7 +734,7 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
     l_country_code        analytics_data_geolocation.country_code%TYPE;
     l_country_name        analytics_data_geolocation.country_name%TYPE;
     l_prepared_ip         analytics_data.anonymous_ip_address%TYPE;
-    -- all ip addresses which are not already stored + only process 150 at once (e.g. dbms_scheduler)
+    -- all ip addresses (public) which are not already stored + only process 150 at once (e.g. dbms_scheduler)
     CURSOR l_cur_analytics_data_ip IS
       SELECT iv2_analytics_data.prepared_ip
         FROM (SELECT iv_analytics_data.prepared_ip,
@@ -667,6 +742,8 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
                 FROM (SELECT DISTINCT apexanalytics_app_pkg.get_prepared_ip_address(p_ip_address => analytics_data.anonymous_ip_address) AS prepared_ip
                         FROM analytics_data
                        WHERE analytics_data.anonymous_ip_address IS NOT NULL
+                         AND (SELECT apexanalytics_app_pkg.is_ip_address_public_yn(p_ip_address => analytics_data.anonymous_ip_address)
+                                FROM dual) = 'Y'
                          AND analytics_data.id NOT IN (SELECT analytics_data_geolocation.analytics_data_id
                                                          FROM analytics_data_geolocation)) iv_analytics_data) iv2_analytics_data
        WHERE iv2_analytics_data.row_num <= 150;
