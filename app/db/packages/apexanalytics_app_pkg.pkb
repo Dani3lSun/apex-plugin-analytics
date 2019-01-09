@@ -322,21 +322,27 @@ CREATE OR REPLACE PACKAGE BODY apexanalytics_app_pkg IS
         l_anonymous_ip_address := apexanalytics_app_pkg.get_anonymous_remote_ip(p_remove_ip_bytes => l_remove_ip_bytes);
       END IF;
       --
-      apexanalytics_app_pkg.insert_analytics_data(p_analytics_id         => l_analytics_id,
-                                                  p_agent_name           => l_agent_name,
-                                                  p_agent_version        => l_agent_version,
-                                                  p_agent_language       => l_agent_language,
-                                                  p_os_name              => l_os_name,
-                                                  p_os_version           => l_os_version,
-                                                  p_has_touch_support    => l_has_touch_support,
-                                                  p_page_load_time       => l_page_load_time,
-                                                  p_screen_width         => l_screen_width,
-                                                  p_screen_height        => l_screen_height,
-                                                  p_apex_app_id          => l_apex_app_id,
-                                                  p_apex_page_id         => l_apex_page_id,
-                                                  p_apex_event_name      => l_apex_event_name,
-                                                  p_additional_info      => l_additional_info,
-                                                  p_anonymous_ip_address => l_anonymous_ip_address);
+      BEGIN
+        apexanalytics_app_pkg.insert_analytics_data(p_analytics_id         => l_analytics_id,
+                                                    p_agent_name           => l_agent_name,
+                                                    p_agent_version        => l_agent_version,
+                                                    p_agent_language       => l_agent_language,
+                                                    p_os_name              => l_os_name,
+                                                    p_os_version           => l_os_version,
+                                                    p_has_touch_support    => l_has_touch_support,
+                                                    p_page_load_time       => l_page_load_time,
+                                                    p_screen_width         => l_screen_width,
+                                                    p_screen_height        => l_screen_height,
+                                                    p_apex_app_id          => l_apex_app_id,
+                                                    p_apex_page_id         => l_apex_page_id,
+                                                    p_apex_event_name      => l_apex_event_name,
+                                                    p_additional_info      => l_additional_info,
+                                                    p_anonymous_ip_address => l_anonymous_ip_address);
+      EXCEPTION
+        WHEN OTHERS THEN
+          raise_application_error(error_rest_insert,
+                                  'Cannot insert received data.');
+      END;
       -- htp output JSON
       htp.init;
       apex_json.open_object;
