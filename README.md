@@ -131,6 +131,8 @@ https://apex.oracle.com/pls/apex/f?p=ANALYTICS_DEMO
 
 ## Changelog
 
+#### 1.0.6 - Performance improvements dashboard page / Extended max row count on Analytics Data IG / Include new app favicons
+
 #### 1.0.5 - Added option (application setting) to enable colored bar charts on dashboard / Allow percentage values also for world map region
 
 #### 1.0.4 - Added optional background image to login page (can be configured in app settings) / Created a native APEX plugin for amCharts world map region / Some dashboard enhancements

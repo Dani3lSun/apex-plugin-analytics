@@ -1,7 +1,7 @@
 /**
  * APEX Analytics
  * Author: Daniel Hochleitner
- * Version: 1.0.5
+ * Version: 1.0.6
  */
 
 /**
